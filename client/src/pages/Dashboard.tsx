@@ -13,11 +13,12 @@ interface DashboardProps {
   onLogGame: () => void;
   onFriendClick: (id: string) => void;
   onTransactionClick: (id: string) => void;
+  onStatCardClick?: (type: 'loan' | 'expense' | 'game' | 'payment') => void;
   onViewAllFriends?: () => void;
   onViewAllTransactions?: () => void;
 }
 
-export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTransactionClick, onViewAllFriends, onViewAllTransactions }: DashboardProps) {
+export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTransactionClick, onStatCardClick, onViewAllFriends, onViewAllTransactions }: DashboardProps) {
   const { currentUser, users, transactions, getTotalOwed, getTotalOwedToYou, getNetBalance, getLastGame } = useData();
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -61,10 +62,10 @@ export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTrans
       <main className="px-4 space-y-6">
         <section>
           <div className="grid grid-cols-2 gap-4">
-            <StatCard type="owe" amount={getTotalOwed()} onClick={onViewAllTransactions} />
-            <StatCard type="owed" amount={getTotalOwedToYou()} onClick={onViewAllTransactions} />
+            <StatCard type="owe" amount={getTotalOwed()} onClick={() => onStatCardClick?.('loan')} />
+            <StatCard type="owed" amount={getTotalOwedToYou()} onClick={() => onStatCardClick?.('expense')} />
             <StatCard type="net" amount={getNetBalance()} onClick={onViewAllTransactions} />
-            <StatCard type="game" amount={lastGameAmount} label={lastGame?.title || 'No games yet'} onClick={onViewAllTransactions} />
+            <StatCard type="game" amount={lastGameAmount} label={lastGame?.title || 'No games yet'} onClick={() => onStatCardClick?.('game')} />
           </div>
         </section>
 
