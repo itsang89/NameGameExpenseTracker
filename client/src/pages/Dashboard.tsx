@@ -13,9 +13,11 @@ interface DashboardProps {
   onLogGame: () => void;
   onFriendClick: (id: string) => void;
   onTransactionClick: (id: string) => void;
+  onViewAllFriends?: () => void;
+  onViewAllTransactions?: () => void;
 }
 
-export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTransactionClick }: DashboardProps) {
+export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTransactionClick, onViewAllFriends, onViewAllTransactions }: DashboardProps) {
   const { currentUser, users, transactions, getTotalOwed, getTotalOwedToYou, getNetBalance, getLastGame } = useData();
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -59,10 +61,10 @@ export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTrans
       <main className="px-4 space-y-6">
         <section>
           <div className="grid grid-cols-2 gap-4">
-            <StatCard type="owe" amount={getTotalOwed()} onClick={() => console.log('You owe clicked')} />
-            <StatCard type="owed" amount={getTotalOwedToYou()} onClick={() => console.log('Owed to you clicked')} />
-            <StatCard type="net" amount={getNetBalance()} onClick={() => console.log('Net balance clicked')} />
-            <StatCard type="game" amount={lastGameAmount} label={lastGame?.title || 'No games yet'} onClick={() => console.log('Last game clicked')} />
+            <StatCard type="owe" amount={getTotalOwed()} onClick={onViewAllTransactions} />
+            <StatCard type="owed" amount={getTotalOwedToYou()} onClick={onViewAllTransactions} />
+            <StatCard type="net" amount={getNetBalance()} onClick={onViewAllTransactions} />
+            <StatCard type="game" amount={lastGameAmount} label={lastGame?.title || 'No games yet'} onClick={onViewAllTransactions} />
           </div>
         </section>
 
@@ -71,7 +73,7 @@ export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTrans
             <h2 className="text-lg font-semibold text-foreground">Friends</h2>
             <button 
               className="text-sm text-primary font-semibold flex items-center gap-1 px-3 py-1.5 rounded-lg neu-interactive-sm"
-              onClick={() => console.log('View all friends')}
+              onClick={onViewAllFriends}
               data-testid="button-view-all-friends"
             >
               View All <ChevronRight className="w-4 h-4" />
@@ -100,6 +102,7 @@ export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTrans
             <h2 className="text-lg font-semibold text-foreground">Recent Activity</h2>
             <button 
               className="text-sm text-primary font-semibold flex items-center gap-1 px-3 py-1.5 rounded-lg neu-interactive-sm"
+              onClick={onViewAllTransactions}
               data-testid="button-view-all-activity"
             >
               View All <ChevronRight className="w-4 h-4" />

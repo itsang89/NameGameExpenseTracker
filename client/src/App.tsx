@@ -82,12 +82,24 @@ function AppContent() {
             onLogGame={handleLogGame}
             onFriendClick={handleFriendClick}
             onTransactionClick={handleTransactionClick}
+            onViewAllFriends={handleViewAllFriends}
+            onViewAllTransactions={handleViewAllTransactions}
           />
         );
     }
   };
 
   const showBottomNav = !['log-loan', 'log-game', 'friend-detail'].includes(currentView);
+
+  const handleViewAllFriends = () => {
+    setCurrentView('friends');
+    setActiveTab('friends');
+  };
+
+  const handleViewAllTransactions = () => {
+    // Show all transactions - use a dummy transaction view or just log for now
+    console.log('View all transactions clicked');
+  };
 
   return (
     <div className="min-h-screen bg-background">
