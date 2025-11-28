@@ -1,4 +1,3 @@
-import { Card } from '@/components/ui/card';
 import { 
   Utensils, ShoppingCart, Home, Plane, Gamepad2, 
   CreditCard, CircleDollarSign, Users, Sparkles
@@ -52,10 +51,10 @@ export default function TransactionItem({
   
   const getIconBg = () => {
     switch (type) {
-      case 'game': return 'bg-game/20 text-game-foreground dark:text-game';
-      case 'payment': return 'bg-primary/20 text-primary';
-      case 'loan': return 'bg-positive/20 text-positive';
-      default: return 'bg-chart-1/20 text-chart-1';
+      case 'game': return 'bg-game/10 text-game-foreground dark:text-game';
+      case 'payment': return 'bg-primary/10 text-primary';
+      case 'loan': return 'bg-positive/10 text-positive';
+      default: return 'bg-chart-1/10 text-chart-1';
     }
   };
   
@@ -84,23 +83,23 @@ export default function TransactionItem({
   };
 
   return (
-    <Card 
-      className="p-4 hover-elevate active-elevate-2 cursor-pointer"
+    <div 
+      className="p-4 rounded-2xl bg-background neu-interactive cursor-pointer"
       onClick={onClick}
       data-testid={`transaction-${title.toLowerCase().replace(/\s+/g, '-')}`}
     >
       <div className="flex items-center gap-3">
-        <div className={`p-2.5 rounded-xl ${getIconBg()}`}>
+        <div className={`p-3 rounded-xl neu-inset ${getIconBg()}`}>
           <Icon className="w-5 h-5" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-foreground truncate">{title}</p>
+          <p className="font-semibold text-foreground truncate">{title}</p>
           <p className="text-sm text-muted-foreground">{formatDate(date)}</p>
         </div>
-        <p className={`font-semibold ${getAmountColor()}`}>
+        <p className={`font-bold text-lg ${getAmountColor()}`}>
           {formatAmount()}
         </p>
       </div>
-    </Card>
+    </div>
   );
 }

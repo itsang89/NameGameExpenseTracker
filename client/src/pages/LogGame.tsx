@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { ArrowLeft, Check, AlertCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
@@ -81,19 +79,23 @@ export default function LogGame({ onBack }: LogGameProps) {
   };
 
   return (
-    <div className="min-h-screen pb-20">
-      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="flex items-center gap-3 p-4">
-          <Button size="icon" variant="ghost" onClick={onBack} data-testid="button-back-game">
+    <div className="min-h-screen pb-8">
+      <header className="sticky top-0 z-30 bg-background pt-4 px-4 pb-3">
+        <div className="flex items-center gap-3 p-3 rounded-2xl neu-raised">
+          <button 
+            onClick={onBack}
+            className="p-2 rounded-xl neu-interactive-sm"
+            data-testid="button-back-game"
+          >
             <ArrowLeft className="w-5 h-5" />
-          </Button>
+          </button>
           <h1 className="text-lg font-semibold">Log Game</h1>
         </div>
       </header>
 
-      <main className="p-4 space-y-6">
+      <main className="px-4 space-y-6">
         <section>
-          <h3 className="text-sm font-medium text-muted-foreground mb-3">Select Game</h3>
+          <h3 className="text-sm font-semibold text-muted-foreground mb-3">Select Game</h3>
           <div className="grid grid-cols-3 gap-3">
             <GameCard 
               type="poker" 
@@ -114,16 +116,18 @@ export default function LogGame({ onBack }: LogGameProps) {
         </section>
 
         <section>
-          <h3 className="text-sm font-medium text-muted-foreground mb-3">Player Results</h3>
+          <h3 className="text-sm font-semibold text-muted-foreground mb-3">Player Results</h3>
           <div className="space-y-3">
             {friends.map((friend) => (
-              <Card key={friend.id} className="p-4">
+              <div key={friend.id} className="p-4 rounded-2xl bg-background neu-raised">
                 <div className="flex items-center gap-3">
-                  <Avatar className="w-12 h-12">
-                    <AvatarImage src={`https://api.dicebear.com/7.x/${friend.avatar}/svg?seed=${friend.name}`} />
-                    <AvatarFallback>{friend.name[0]}</AvatarFallback>
-                  </Avatar>
-                  <span className="flex-1 font-medium">{friend.name}</span>
+                  <div className="p-1 rounded-full neu-raised-sm">
+                    <Avatar className="w-10 h-10">
+                      <AvatarImage src={`https://api.dicebear.com/7.x/${friend.avatar}/svg?seed=${friend.name}`} />
+                      <AvatarFallback>{friend.name[0]}</AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <span className="flex-1 font-semibold">{friend.name}</span>
                   <div className="flex items-center gap-2">
                     <Input
                       type="number"
@@ -131,7 +135,7 @@ export default function LogGame({ onBack }: LogGameProps) {
                       placeholder="0"
                       value={playerScores[friend.id] || ''}
                       onChange={(e) => handleScoreChange(friend.id, e.target.value)}
-                      className={`w-28 text-right ${
+                      className={`w-28 text-right font-semibold neu-inset border-none ${
                         (playerScores[friend.id] || 0) > 0 
                           ? 'text-positive' 
                           : (playerScores[friend.id] || 0) < 0 
@@ -142,20 +146,24 @@ export default function LogGame({ onBack }: LogGameProps) {
                     />
                   </div>
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
         </section>
 
-        <Card className={`p-4 ${isBalanced() ? 'bg-positive/10' : 'bg-negative/10'}`}>
+        <div className={`p-5 rounded-2xl bg-background ${isBalanced() ? 'neu-glow-positive' : 'neu-glow-negative'}`}>
           <div className="flex items-center gap-3">
             {isBalanced() ? (
-              <Check className="w-5 h-5 text-positive" />
+              <div className="p-2 rounded-xl neu-inset bg-positive/10">
+                <Check className="w-5 h-5 text-positive" />
+              </div>
             ) : (
-              <AlertCircle className="w-5 h-5 text-negative" />
+              <div className="p-2 rounded-xl neu-inset bg-negative/10">
+                <AlertCircle className="w-5 h-5 text-negative" />
+              </div>
             )}
             <div className="flex-1">
-              <p className="font-medium">Total Balance</p>
+              <p className="font-semibold">Total Balance</p>
               <p className={`text-sm ${isBalanced() ? 'text-positive' : 'text-negative'}`}>
                 {isBalanced() 
                   ? 'Scores are balanced' 
@@ -167,17 +175,21 @@ export default function LogGame({ onBack }: LogGameProps) {
               {getTotal() >= 0 ? '+' : '-'}${Math.abs(getTotal()).toFixed(1)}
             </span>
           </div>
-        </Card>
+        </div>
 
-        <Button 
-          className="w-full bg-game hover:bg-game/90 text-game-foreground"
+        <button 
+          className={`w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
+            isBalanced() 
+              ? 'bg-game text-game-foreground neu-btn' 
+              : 'bg-muted text-muted-foreground neu-pressed cursor-not-allowed'
+          }`}
           onClick={handleSave}
           disabled={!isBalanced()}
           data-testid="button-save-game"
         >
-          <Check className="w-5 h-5 mr-2" />
+          <Check className="w-5 h-5" />
           Save Game
-        </Button>
+        </button>
       </main>
     </div>
   );

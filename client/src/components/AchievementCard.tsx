@@ -1,4 +1,3 @@
-import { Card } from '@/components/ui/card';
 import { Trophy, Flame, Gamepad2 } from 'lucide-react';
 
 interface AchievementCardProps {
@@ -11,18 +10,18 @@ interface AchievementCardProps {
 const achievementConfig = {
   'biggest-winner': {
     icon: Trophy,
-    bgClass: 'bg-game/10',
     iconColor: 'text-game',
+    glowClass: 'neu-glow-game',
   },
   'win-streak': {
     icon: Flame,
-    bgClass: 'bg-coral/10',
     iconColor: 'text-coral',
+    glowClass: 'neu-raised',
   },
   'most-played': {
     icon: Gamepad2,
-    bgClass: 'bg-chart-1/10',
-    iconColor: 'text-chart-1',
+    iconColor: 'text-primary',
+    glowClass: 'neu-glow-primary',
   },
 };
 
@@ -31,20 +30,20 @@ export default function AchievementCard({ type, title, value, holder }: Achievem
   const Icon = config.icon;
 
   return (
-    <Card 
-      className={`p-4 ${config.bgClass}`}
+    <div 
+      className={`p-5 rounded-2xl bg-background ${config.glowClass}`}
       data-testid={`achievement-${type}`}
     >
-      <div className="flex items-start gap-3">
-        <div className={`p-2 rounded-xl ${config.bgClass}`}>
+      <div className="flex items-start gap-4">
+        <div className="p-3 rounded-xl neu-inset">
           <Icon className={`w-6 h-6 ${config.iconColor}`} />
         </div>
         <div className="flex-1">
-          <p className="text-sm text-muted-foreground">{title}</p>
-          <p className="text-xl font-bold text-foreground">{value}</p>
+          <p className="text-sm text-muted-foreground font-medium">{title}</p>
+          <p className="text-2xl font-bold text-foreground mt-1">{value}</p>
           <p className="text-sm text-muted-foreground mt-1">{holder}</p>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }

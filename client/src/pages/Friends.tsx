@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Plus, Phone, MessageCircle, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import AddFriendModal from '@/components/AddFriendModal';
@@ -49,44 +47,65 @@ export default function Friends({ onFriendClick }: FriendsProps) {
   const selectedUserForSettle = users.find(u => u.id === settleUpUser);
 
   return (
-    <div className="min-h-screen pb-20">
-      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b border-border p-4">
-        <h1 className="text-xl font-semibold text-foreground">Friends & Groups</h1>
+    <div className="min-h-screen pb-24">
+      <header className="sticky top-0 z-30 bg-background pt-4 px-4 pb-3">
+        <div className="p-4 rounded-2xl neu-raised">
+          <h1 className="text-xl font-bold text-foreground">Friends & Groups</h1>
+        </div>
       </header>
 
-      <main className="p-4 space-y-4">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="w-full">
-            <TabsTrigger value="all" className="flex-1">All</TabsTrigger>
-            <TabsTrigger value="friends" className="flex-1">Friends ({friends.length})</TabsTrigger>
-            <TabsTrigger value="groups" className="flex-1">Groups ({groups.length})</TabsTrigger>
-          </TabsList>
-        </Tabs>
+      <main className="px-4 space-y-4">
+        <div className="p-1 rounded-2xl neu-raised">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="w-full bg-transparent gap-1">
+              <TabsTrigger 
+                value="all" 
+                className={`flex-1 rounded-xl py-2.5 ${activeTab === 'all' ? 'neu-pressed' : 'neu-btn'}`}
+              >
+                All
+              </TabsTrigger>
+              <TabsTrigger 
+                value="friends" 
+                className={`flex-1 rounded-xl py-2.5 ${activeTab === 'friends' ? 'neu-pressed' : 'neu-btn'}`}
+              >
+                Friends ({friends.length})
+              </TabsTrigger>
+              <TabsTrigger 
+                value="groups" 
+                className={`flex-1 rounded-xl py-2.5 ${activeTab === 'groups' ? 'neu-pressed' : 'neu-btn'}`}
+              >
+                Groups ({groups.length})
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
 
         <div className="space-y-3">
           {displayUsers.map((user) => {
             const balanceDisplay = getBalanceDisplay(user.balance);
             
             return (
-              <Card 
+              <div 
                 key={user.id} 
-                className="p-4 hover-elevate active-elevate-2"
+                className="p-4 rounded-2xl bg-background neu-raised"
               >
                 <div className="flex items-center gap-3">
                   <div onClick={() => onFriendClick(user.id)} className="flex items-center gap-3 flex-1 cursor-pointer">
                     {user.isGroup ? (
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-xl">
+                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-xl neu-raised-sm">
                         🎲
                       </div>
                     ) : (
-                      <Avatar className="w-12 h-12">
-                        <AvatarImage src={`https://api.dicebear.com/7.x/${user.avatar}/svg?seed=${user.name}`} />
-                        <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
-                      </Avatar>
+                      <div className="p-1 rounded-full neu-raised-sm">
+                        <Avatar className="w-11 h-11">
+                          <AvatarImage src={`https://api.dicebear.com/7.x/${user.avatar}/svg?seed=${user.name}`} />
+                          <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
+                        </Avatar>
+                      </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-foreground truncate">{user.name}</p>
-                      <p className={`text-sm ${balanceDisplay.color}`}>
+                      <p className="font-semibold text-foreground truncate">{user.name}</p>
+                      <p className={`text-sm font-medium ${balanceDisplay.color}`}>
                         {user.isGroup ? `${user.members?.length} members` : balanceDisplay.text}
                       </p>
                     </div>
@@ -94,57 +113,51 @@ export default function Friends({ onFriendClick }: FriendsProps) {
                   
                   <div className="flex items-center gap-1">
                     {!user.isGroup && user.balance !== 0 && (
-                      <Button 
-                        size="sm" 
-                        variant="outline"
+                      <button 
+                        className="px-3 py-1.5 rounded-lg text-sm font-semibold text-primary neu-btn"
                         onClick={() => setSettleUpUser(user.id)}
                         data-testid={`button-settle-${user.id}`}
                       >
                         Settle
-                      </Button>
+                      </button>
                     )}
-                    <Button 
-                      size="icon" 
-                      variant="ghost"
+                    <button 
+                      className="p-2 rounded-lg neu-interactive-sm"
                       onClick={() => console.log('Call', user.name)}
                       data-testid={`button-call-${user.id}`}
                     >
-                      <Phone className="w-4 h-4" />
-                    </Button>
-                    <Button 
-                      size="icon" 
-                      variant="ghost"
+                      <Phone className="w-4 h-4 text-muted-foreground" />
+                    </button>
+                    <button 
+                      className="p-2 rounded-lg neu-interactive-sm"
                       onClick={() => console.log('Message', user.name)}
                       data-testid={`button-message-${user.id}`}
                     >
-                      <MessageCircle className="w-4 h-4" />
-                    </Button>
-                    <Button 
-                      size="icon" 
-                      variant="ghost"
+                      <MessageCircle className="w-4 h-4 text-muted-foreground" />
+                    </button>
+                    <button 
+                      className="p-2 rounded-lg neu-interactive-sm"
                       onClick={() => setDeleteUser(user.id)}
-                      className="text-negative"
                       data-testid={`button-delete-${user.id}`}
                     >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                      <Trash2 className="w-4 h-4 text-negative" />
+                    </button>
                   </div>
                 </div>
-              </Card>
+              </div>
             );
           })}
         </div>
       </main>
 
-      <div className="fixed bottom-20 right-4 flex flex-col gap-2">
-        <Button
-          size="icon"
-          className="w-12 h-12 rounded-full shadow-lg bg-primary"
+      <div className="fixed bottom-24 right-4">
+        <button
+          className="w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center neu-btn"
           onClick={() => activeTab === 'groups' ? setShowAddGroup(true) : setShowAddFriend(true)}
           data-testid="button-add-friend-group"
         >
           <Plus className="w-6 h-6" />
-        </Button>
+        </button>
       </div>
 
       <AddFriendModal 
@@ -172,7 +185,7 @@ export default function Friends({ onFriendClick }: FriendsProps) {
       )}
 
       <AlertDialog open={!!deleteUser} onOpenChange={() => setDeleteUser(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-3xl neu-raised border-none">
           <AlertDialogHeader>
             <AlertDialogTitle>Remove {users.find(u => u.id === deleteUser)?.name}?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -180,9 +193,9 @@ export default function Friends({ onFriendClick }: FriendsProps) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-xl neu-btn">Cancel</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-negative hover:bg-negative/90"
+              className="rounded-xl bg-negative hover:bg-negative/90 neu-btn"
               onClick={() => {
                 if (deleteUser) removeUser(deleteUser);
                 setDeleteUser(null);

@@ -44,7 +44,7 @@ export default function AmountInput({ value, onChange, className = '' }: AmountI
         value={displayValue}
         onChange={handleChange}
         onBlur={handleBlur}
-        className="text-6xl font-bold bg-transparent border-none outline-none text-center text-foreground focus:ring-2 focus:ring-primary rounded-lg w-48"
+        className="text-6xl font-bold bg-background border-none outline-none text-center text-foreground w-48 py-4 px-2 rounded-2xl neu-inset focus:ring-2 focus:ring-primary/30"
         data-testid="input-amount"
       />
     </div>

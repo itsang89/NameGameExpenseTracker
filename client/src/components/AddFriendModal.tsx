@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
@@ -31,38 +30,42 @@ export default function AddFriendModal({ isOpen, onClose, onAdd }: AddFriendModa
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md rounded-3xl neu-raised border-none">
         <DialogHeader>
-          <DialogTitle>Add Friend</DialogTitle>
+          <DialogTitle className="text-xl">Add Friend</DialogTitle>
+          <DialogDescription>
+            Add a new friend to split expenses with
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-6 py-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name" className="font-semibold">Name</Label>
             <Input
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter friend's name"
+              className="rounded-xl neu-inset border-none"
               data-testid="input-friend-name"
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Choose Avatar</Label>
+            <Label className="font-semibold">Choose Avatar</Label>
             <div className="grid grid-cols-5 gap-3">
               {avatarStyles.map((style) => (
                 <button
                   key={style}
                   onClick={() => setSelectedAvatar(style)}
-                  className={`p-1 rounded-xl transition-all ${
+                  className={`p-1.5 rounded-xl transition-all ${
                     selectedAvatar === style 
-                      ? 'ring-2 ring-primary bg-primary/10' 
-                      : 'hover-elevate'
+                      ? 'neu-pressed ring-2 ring-primary' 
+                      : 'neu-interactive-sm'
                   }`}
                   data-testid={`avatar-option-${style}`}
                 >
-                  <Avatar className="w-12 h-12">
+                  <Avatar className="w-11 h-11">
                     <AvatarImage 
                       src={`https://api.dicebear.com/7.x/${style}/svg?seed=${name || 'preview'}`} 
                       alt={style} 
@@ -74,17 +77,26 @@ export default function AddFriendModal({ isOpen, onClose, onAdd }: AddFriendModa
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose} data-testid="button-cancel-add-friend">
+        <DialogFooter className="gap-3">
+          <button 
+            className="flex-1 py-3 rounded-xl font-semibold neu-btn"
+            onClick={onClose} 
+            data-testid="button-cancel-add-friend"
+          >
             Cancel
-          </Button>
-          <Button 
+          </button>
+          <button 
             onClick={handleAdd}
             disabled={!name.trim()}
+            className={`flex-1 py-3 rounded-xl font-semibold ${
+              name.trim() 
+                ? 'bg-primary text-primary-foreground neu-btn' 
+                : 'bg-muted text-muted-foreground neu-pressed cursor-not-allowed'
+            }`}
             data-testid="button-confirm-add-friend"
           >
             Add Friend
-          </Button>
+          </button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

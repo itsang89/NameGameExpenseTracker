@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -39,25 +38,29 @@ export default function AddGroupModal({ isOpen, onClose, onAdd, friends }: AddGr
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto rounded-3xl neu-raised border-none">
         <DialogHeader>
-          <DialogTitle>Create Group</DialogTitle>
+          <DialogTitle className="text-xl">Create Group</DialogTitle>
+          <DialogDescription>
+            Create a group to organize recurring expenses
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-6 py-4">
           <div className="space-y-2">
-            <Label htmlFor="groupName">Group Name</Label>
+            <Label htmlFor="groupName" className="font-semibold">Group Name</Label>
             <Input
               id="groupName"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Poker Night"
+              className="rounded-xl neu-inset border-none"
               data-testid="input-group-name"
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Choose Icon</Label>
+            <Label className="font-semibold">Choose Icon</Label>
             <div className="flex gap-2 flex-wrap">
               {groupIcons.map((icon) => (
                 <button
@@ -65,8 +68,8 @@ export default function AddGroupModal({ isOpen, onClose, onAdd, friends }: AddGr
                   onClick={() => setSelectedIcon(icon)}
                   className={`w-12 h-12 rounded-xl text-2xl flex items-center justify-center transition-all ${
                     selectedIcon === icon 
-                      ? 'ring-2 ring-primary bg-primary/10' 
-                      : 'bg-muted hover-elevate'
+                      ? 'neu-pressed ring-2 ring-primary' 
+                      : 'neu-interactive-sm'
                   }`}
                   data-testid={`group-icon-${icon}`}
                 >
@@ -77,12 +80,12 @@ export default function AddGroupModal({ isOpen, onClose, onAdd, friends }: AddGr
           </div>
 
           <div className="space-y-2">
-            <Label>Select Members ({selectedMembers.length} selected)</Label>
+            <Label className="font-semibold">Select Members ({selectedMembers.length} selected)</Label>
             <div className="space-y-2 max-h-48 overflow-y-auto">
               {friends.filter(f => !f.isGroup).map((friend) => (
                 <label
                   key={friend.id}
-                  className="flex items-center gap-3 p-3 rounded-xl hover-elevate cursor-pointer"
+                  className="flex items-center gap-3 p-3 rounded-xl neu-interactive-sm cursor-pointer"
                 >
                   <Checkbox
                     checked={selectedMembers.includes(friend.id)}
@@ -103,17 +106,26 @@ export default function AddGroupModal({ isOpen, onClose, onAdd, friends }: AddGr
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose} data-testid="button-cancel-add-group">
+        <DialogFooter className="gap-3">
+          <button 
+            className="flex-1 py-3 rounded-xl font-semibold neu-btn"
+            onClick={onClose} 
+            data-testid="button-cancel-add-group"
+          >
             Cancel
-          </Button>
-          <Button 
+          </button>
+          <button 
             onClick={handleAdd}
             disabled={!name.trim() || selectedMembers.length === 0}
+            className={`flex-1 py-3 rounded-xl font-semibold ${
+              name.trim() && selectedMembers.length > 0
+                ? 'bg-primary text-primary-foreground neu-btn' 
+                : 'bg-muted text-muted-foreground neu-pressed cursor-not-allowed'
+            }`}
             data-testid="button-confirm-add-group"
           >
             Create Group
-          </Button>
+          </button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

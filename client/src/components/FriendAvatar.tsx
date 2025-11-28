@@ -44,26 +44,26 @@ export default function FriendAvatar({
 
   return (
     <div 
-      className={`flex flex-col items-center gap-1 ${onClick ? 'cursor-pointer hover-elevate active-elevate-2 rounded-xl p-2' : ''}`}
+      className={`flex flex-col items-center gap-1.5 ${onClick ? 'cursor-pointer' : ''}`}
       onClick={onClick}
       data-testid={`friend-avatar-${name.toLowerCase().replace(/\s+/g, '-')}`}
     >
-      <div className="relative">
-        <Avatar className={`${sizeClasses[size]} ${isWinner ? 'ring-4 ring-game' : ''}`}>
+      <div className={`relative p-1.5 rounded-full ${onClick ? 'neu-interactive-sm' : 'neu-raised-sm'}`}>
+        <Avatar className={`${sizeClasses[size]} ${isWinner ? 'ring-3 ring-game ring-offset-2 ring-offset-background' : ''}`}>
           <AvatarImage src={avatarUrl} alt={name} />
           <AvatarFallback className="bg-primary/10 text-primary font-medium">
             {name.slice(0, 2).toUpperCase()}
           </AvatarFallback>
         </Avatar>
         {isWinner && (
-          <div className="absolute -top-2 -right-1 bg-game rounded-full p-0.5">
+          <div className="absolute -top-1 -right-0 bg-game rounded-full p-1 neu-raised-sm">
             <Crown className="w-3 h-3 text-game-foreground" />
           </div>
         )}
       </div>
       <span className="text-sm font-medium truncate max-w-[64px] text-foreground">{name}</span>
       {showBalance && (
-        <span className={`text-xs font-medium ${getBalanceColor()}`}>
+        <span className={`text-xs font-semibold ${getBalanceColor()}`}>
           {getBalanceText()}
         </span>
       )}

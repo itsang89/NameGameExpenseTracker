@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import { Settings, CreditCard, Shield, HelpCircle, LogOut, ChevronRight, Moon, Sun } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { useData } from '@/contexts/DataContext';
 
@@ -27,42 +25,48 @@ export default function Profile({ isDarkMode, onToggleDarkMode }: ProfileProps) 
   ];
 
   return (
-    <div className="min-h-screen pb-20">
-      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b border-border p-4">
-        <h1 className="text-xl font-semibold text-foreground">Profile</h1>
+    <div className="min-h-screen pb-24">
+      <header className="sticky top-0 z-30 bg-background pt-4 px-4 pb-3">
+        <div className="p-4 rounded-2xl neu-raised">
+          <h1 className="text-xl font-bold text-foreground">Profile</h1>
+        </div>
       </header>
 
-      <main className="p-4 space-y-6">
+      <main className="px-4 space-y-6">
         <section className="flex flex-col items-center py-6">
-          <Avatar className="w-24 h-24 ring-4 ring-primary/20">
-            <AvatarImage src={avatarUrl} alt={currentUser.name} />
-            <AvatarFallback>Y</AvatarFallback>
-          </Avatar>
-          <h2 className="text-xl font-semibold mt-4">Player</h2>
+          <div className="p-2 rounded-full neu-raised">
+            <Avatar className="w-24 h-24 ring-4 ring-primary/20">
+              <AvatarImage src={avatarUrl} alt={currentUser.name} />
+              <AvatarFallback>Y</AvatarFallback>
+            </Avatar>
+          </div>
+          <h2 className="text-xl font-bold mt-4">Player</h2>
           <p className="text-muted-foreground">@player</p>
         </section>
 
         <section className="grid grid-cols-3 gap-3">
-          <Card className="p-4 text-center bg-positive/10">
+          <div className="p-5 rounded-2xl text-center bg-background neu-glow-positive">
             <p className="text-2xl font-bold text-positive">${totalWon.toFixed(1)}</p>
-            <p className="text-sm text-muted-foreground">Total Won</p>
-          </Card>
-          <Card className="p-4 text-center bg-primary/10">
+            <p className="text-sm text-muted-foreground font-medium mt-1">Total Won</p>
+          </div>
+          <div className="p-5 rounded-2xl text-center bg-background neu-glow-primary">
             <p className="text-2xl font-bold text-primary">{totalGroups}</p>
-            <p className="text-sm text-muted-foreground">Groups</p>
-          </Card>
-          <Card className="p-4 text-center bg-game/10">
+            <p className="text-sm text-muted-foreground font-medium mt-1">Groups</p>
+          </div>
+          <div className="p-5 rounded-2xl text-center bg-background neu-glow-game">
             <p className="text-2xl font-bold text-game-foreground dark:text-game">{gameCount}</p>
-            <p className="text-sm text-muted-foreground">Games</p>
-          </Card>
+            <p className="text-sm text-muted-foreground font-medium mt-1">Games</p>
+          </div>
         </section>
 
         <section>
-          <Card className="divide-y divide-border">
+          <div className="rounded-2xl bg-background neu-raised divide-y divide-border/50">
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center gap-3">
-                {isDarkMode ? <Moon className="w-5 h-5 text-muted-foreground" /> : <Sun className="w-5 h-5 text-muted-foreground" />}
-                <span className="font-medium">Dark Mode</span>
+                <div className="p-2 rounded-xl neu-inset">
+                  {isDarkMode ? <Moon className="w-5 h-5 text-muted-foreground" /> : <Sun className="w-5 h-5 text-muted-foreground" />}
+                </div>
+                <span className="font-semibold">Dark Mode</span>
               </div>
               <Switch 
                 checked={isDarkMode} 
@@ -75,28 +79,32 @@ export default function Profile({ isDarkMode, onToggleDarkMode }: ProfileProps) 
               <button
                 key={item.label}
                 onClick={item.action}
-                className="flex items-center gap-3 w-full p-4 hover-elevate active-elevate-2 text-left"
+                className="flex items-center gap-3 w-full p-4 text-left transition-all active:bg-muted/50"
                 data-testid={`menu-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
               >
-                <item.icon className="w-5 h-5 text-muted-foreground" />
-                <span className="flex-1 font-medium">{item.label}</span>
+                <div className="p-2 rounded-xl neu-inset">
+                  <item.icon className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <span className="flex-1 font-semibold">{item.label}</span>
                 <ChevronRight className="w-5 h-5 text-muted-foreground" />
               </button>
             ))}
-          </Card>
+          </div>
         </section>
 
         <section>
-          <Card>
+          <div className="rounded-2xl bg-background neu-raised">
             <button
               onClick={() => console.log('Logout')}
-              className="flex items-center gap-3 w-full p-4 hover-elevate active-elevate-2 text-negative"
+              className="flex items-center gap-3 w-full p-4 text-negative transition-all active:bg-negative/10"
               data-testid="button-logout"
             >
-              <LogOut className="w-5 h-5" />
-              <span className="font-medium">Log Out</span>
+              <div className="p-2 rounded-xl neu-inset">
+                <LogOut className="w-5 h-5" />
+              </div>
+              <span className="font-semibold">Log Out</span>
             </button>
-          </Card>
+          </div>
         </section>
       </main>
     </div>

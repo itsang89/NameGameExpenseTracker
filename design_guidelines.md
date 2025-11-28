@@ -1,149 +1,162 @@
-# Design Guidelines: Game & Expense Tracker
+# Design Guidelines: Game & Expense Tracker - Neumorphism 2.0
 
 ## Design Approach
-**Reference-Based Approach**: Drawing inspiration from social finance apps like Splitwise combined with playful gaming interfaces. The design prioritizes vibrant, cartoon-inspired aesthetics with a focus on clarity and quick interactions for mobile-web use.
+**Neumorphism 2.0 Style**: Soft, tactile UI with elements that appear to extrude from or press into the background. Uses dual shadows (light + dark) to create depth while maintaining improved accessibility over classic neumorphism.
 
 ## Core Design Principles
-- **Playful Finance**: Balance serious financial tracking with fun, approachable visuals
-- **Visual Hierarchy through Color**: Use color to communicate financial status immediately
-- **Touch-Optimized**: Large interactive elements for mobile-first experience
-- **Instant Feedback**: Clear visual states for all actions
+- **Soft & Tactile**: Elements feel like soft clay or plastic, touchable and 3D
+- **Monochromatic Base**: Off-white/off-black backgrounds with same-color elements
+- **Dual Shadows**: Light source from top-left creates convex (raised) or concave (pressed) effects
+- **Accent Colors Sparingly**: Bold colors only for important actions and status indicators
+- **Improved Accessibility**: Strategic contrast for interactive elements
 
 ## Typography
 **Font Family**: Spline Sans (Google Fonts)
 
 **Scale**:
-- Hero Numbers: text-4xl to text-6xl (Amount displays, stat cards)
-- Section Titles: text-2xl font-semibold
+- Hero Numbers: text-4xl to text-6xl font-bold
+- Section Titles: text-xl font-semibold
 - Card Headers: text-lg font-medium
 - Body Text: text-base
-- Labels/Meta: text-sm text-gray-600
+- Labels/Meta: text-sm text-muted-foreground
 
 ## Color System
 
-**Status Colors**:
-- Positive/Owed to You: #7ED321 (green-500)
-- Negative/You Owe: #D0021B (red-600)
-- Neutral/Net Balance: #4A90E2 (blue-500)
+### Base Colors (Monochromatic)
+**Light Mode**:
+- Background: #E8ECEF (soft gray)
+- Surface: #E8ECEF (same as background)
+- Foreground: #2D3748 (dark gray for text)
 
-**Primary Actions**:
-- General UI: #14B8A6 (teal-500)
-- Financial Actions: #0df20d (bright green)
-- Game Actions: #FBBF24 (yellow-400), #F78B78 (coral)
+**Dark Mode**:
+- Background: #1A1D21 (deep charcoal)
+- Surface: #1A1D21 (same as background)
+- Foreground: #E2E8F0 (light gray for text)
 
-**Backgrounds**:
-- Light Mode: #F8F9FA (gray-50)
-- Cards: White with shadow-sm
-- Dark Accents: #111827 (gray-900)
+### Neumorphic Shadows
+**Light Mode (Convex/Raised)**:
+- Light shadow: -6px -6px 14px rgba(255, 255, 255, 0.7)
+- Dark shadow: 6px 6px 14px rgba(166, 180, 200, 0.5)
+
+**Light Mode (Concave/Pressed)**:
+- Inset light: inset -3px -3px 7px rgba(255, 255, 255, 0.7)
+- Inset dark: inset 3px 3px 7px rgba(166, 180, 200, 0.5)
+
+**Dark Mode (Convex/Raised)**:
+- Light shadow: -6px -6px 14px rgba(40, 44, 52, 0.5)
+- Dark shadow: 6px 6px 14px rgba(0, 0, 0, 0.4)
+
+**Dark Mode (Concave/Pressed)**:
+- Inset light: inset -3px -3px 7px rgba(40, 44, 52, 0.5)
+- Inset dark: inset 3px 3px 7px rgba(0, 0, 0, 0.4)
+
+### Accent Colors (Used Sparingly)
+- Primary/Teal: #14B8A6 - Main actions
+- Positive/Green: #10B981 - Owed to you, wins
+- Negative/Red: #EF4444 - You owe, losses
+- Game/Amber: #F59E0B - Game-related
+- Coral: #F78B78 - Secondary accent
 
 ## Layout System
 
-**Spacing Units**: Tailwind units of 2, 4, 6, 8, 12, 16, 20
-- Card padding: p-6
+**Spacing Units**: 4, 6, 8, 12, 16, 20, 24
+- Card padding: p-5 to p-6
 - Section spacing: space-y-6
-- Grid gaps: gap-4
-- List item spacing: py-4
+- Grid gaps: gap-4 to gap-6
+- Element gaps: gap-3
 
-**Container Strategy**:
-- Dashboard: Full-width with px-4 inner padding
-- Modals: max-w-lg centered
-- Detail Views: max-w-2xl
+**Border Radius**: Large for soft feel
+- Cards: rounded-2xl (16px)
+- Buttons: rounded-xl (12px)
+- Inputs: rounded-xl (12px)
+- Small elements: rounded-lg (8px)
+
+## Component Styling
+
+### Neumorphic Cards (Raised)
+```css
+background: var(--neu-surface);
+border-radius: 16px;
+box-shadow: var(--neu-shadow-raised);
+```
+
+### Neumorphic Buttons (Raised → Pressed on click)
+- Default: Raised shadow
+- Hover: Slightly elevated
+- Active/Pressed: Inset shadow (concave)
+
+### Neumorphic Inputs (Concave/Inset)
+```css
+background: var(--neu-surface);
+border-radius: 12px;
+box-shadow: var(--neu-shadow-inset);
+```
+
+### Interactive States
+- **Raised elements**: Cards, buttons, toggles in "off" state
+- **Pressed elements**: Active buttons, toggles in "on" state, input fields
+- **Flat elements**: Text, icons (no shadow)
 
 ## Component Library
 
-**Cards**:
-- Border radius: rounded-2xl
-- Background: bg-white
-- Shadow: shadow-sm
-- Padding: p-6
+### Stat Cards
+- Raised neumorphic style
+- Subtle colored glow for status indication
+- Large rounded corners (rounded-2xl)
+- Icon with soft colored background
 
-**Stat Cards** (Dashboard):
-- Grid layout: grid-cols-2 gap-4
-- Click-to-navigate functionality
-- Icon + Label + Large Number + Status Color
-- Status colors: Red (You Owe), Green (Owed), Blue (Net), Teal (Last Game)
+### Avatars
+- Raised circular elements
+- Source: DiceBear API
+- Neumorphic ring for winner highlight
 
-**Avatars**:
-- Source: DiceBear API for cartoon avatars
-- Sizes: w-12 h-12 (list), w-16 h-16 (detail), w-24 h-24 (profile)
-- Shape: rounded-full
-- Winner Highlight: ring-4 ring-yellow-400 with crown icon overlay
+### Friends Carousel
+- Horizontal scroll with soft shadows
+- Each avatar is a raised element
 
-**Friends Carousel**:
-- Horizontal scroll: flex overflow-x-auto
-- Winner gets gold border treatment
-- Sorted by balance magnitude
+### Buttons
+- Primary: Raised with teal accent color
+- Secondary: Raised, monochromatic
+- Ghost: Flat with hover elevation
+- Active state: Pressed/inset shadow
 
-**Inputs**:
-- Amount Entry: text-6xl font-bold, borderless, focus:ring-2 focus:ring-teal-500
-- Text Fields: border-b-2 border-gray-200, focus:border-teal-500
-- Clean, minimal styling with prominent focus states
+### Navigation
+- Bottom nav: Raised bar with pressed active state
+- Active indicator: Pressed/inset style with accent color
 
-**Buttons**:
-- Primary: bg-teal-500 text-white rounded-xl px-6 py-3 active:scale-95
-- Destructive: bg-red-600 text-white
-- Secondary: bg-gray-100 text-gray-700
-- FAB: fixed bottom-20 right-4, w-14 h-14, rounded-full, shadow-lg
+### Modals
+- Raised card style
+- Soft overlay background
+- Large border radius
 
-**Icons**:
-- Library: Material Symbols (via CDN)
-- Category Icons: Food (restaurant), Money (payments), Game (casino), Travel (flight), etc.
-- Status Icons: Arrow indicators for debt direction
+### Inputs
+- Inset/concave shadow (appears pressed into surface)
+- Focus: Subtle accent glow
+- Large border radius
 
-**Navigation**:
-- Bottom Nav: Sticky, 5 icons (Home, Friends, Analytics, Profile, +)
-- Active State: text-teal-500 with indicator dot
-- Background: White with shadow-md
+### Toggle/Switch
+- Track: Inset shadow
+- Thumb: Raised shadow
 
-**Modals**:
-- Entry: animate-fadeIn + animate-slideUp
-- Overlay: bg-black/50
-- Content: rounded-t-3xl (bottom sheet style)
-- Close: X button top-right
-
-**Transaction Lists**:
-- Row structure: Avatar + [Title, Date, Amount]
-- Amount color-coded by type
-- Tap to view detail
-- Icons indicate type (loan/game/payment)
-
-**Game Selection Grid**:
-- 3-column grid: grid-cols-3 gap-4
-- Cards with game icons (Poker: ♠️, Mahjong: 🀄, Blackjack: 🂡)
-- Active selection: ring-2 ring-teal-500
-
-**Splitting Interface**:
-- Toggle: Equal/Unequal with pill switch
-- Participant rows with adjustable amounts
-- Live total calculation display
-- Validation: Red text for mismatches
-
-**Charts** (Analytics):
-- Library: Recharts
-- Area charts for 30-day trends
-- Color: Teal gradient fill
-- Responsive: h-64
-
-## Images
-**No Hero Images**: This is a utility-focused mobile web app. All visual interest comes from:
-- Cartoon avatars throughout
-- Colorful stat cards
-- Icon-based category selections
-- Chart visualizations
-
-**Avatar Strategy**: Heavy use of DiceBear cartoon avatars for personalization and visual warmth
+### Charts
+- Soft container with raised shadow
+- Gradient fills with low opacity
 
 ## Animations
-**Sparingly Applied**:
-- Button press: active:scale-95
-- Modal entry: Slide-up + fade-in
-- Card tap: Brief scale feedback
-- NO scroll animations or complex transitions
+- **Button press**: Scale down slightly + shadow transition to inset
+- **Card tap**: Subtle scale + shadow intensity change
+- **Transitions**: 200-300ms ease for shadow changes
 
-## Accessibility
-- Color is supplemented with icons and text labels
-- Touch targets minimum 44x44px
-- Clear focus states on all interactive elements
-- Balance amounts include directional context ("You owe" vs "Owes you")
+## Accessibility (Neumorphism 2.0 Improvements)
+- Text maintains WCAG contrast ratios
+- Interactive elements have clear focus states with accent color rings
+- Status colors supplement shadows for visual hierarchy
+- Active/inactive states clearly distinguishable
+- Accent colors ensure CTAs stand out
 
-This design creates a vibrant, approachable financial tool that feels more like a social app than accounting software, while maintaining clarity for serious money tracking.
+## Images
+**No Hero Images**: Visual interest comes from:
+- 3D neumorphic depth effects
+- Cartoon avatars (DiceBear)
+- Soft colored accent glows
+- Chart visualizations
