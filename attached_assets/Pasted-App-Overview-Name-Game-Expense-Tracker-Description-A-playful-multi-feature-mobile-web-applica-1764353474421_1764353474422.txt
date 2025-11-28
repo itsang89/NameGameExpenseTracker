@@ -1,0 +1,125 @@
+App Overview
+Name: Game & Expense Tracker
+Description: A playful, multi-feature mobile-web application designed to track game scores, manage group finances (loans/expenses), and visualize analytics. It combines social finance tools (like Splitwise) with game logging (like a poker ledger), wrapped in a vibrant, cartoon-inspired aesthetic.
+1. Core Features & Functionality
+A. Financial Tracking (Log Loan)
+Purpose: Record expenses, loans, and shared costs between the current user and friends/groups.
+Input Mechanics:
+Amount Entry: Large, editable numeric display.
+Payer Logic: Fixed to "You" (Current User).
+Participant Selection ("For Whom"):
+Select multiple individual Friends.
+Select Groups: Automatically expands to include all members of that group.
+Splitting Logic:
+Equally: Divide total amount by (Selected Participants + 1 for Payer).
+Unequally: Manual input for each participant. Total amount auto-updates to match the sum of splits. Includes validation to ensure math adds up.
+Metadata:
+Categories: Visual icons (Dinner, Rent, Shopping, Games, Travel, etc.).
+Notes: Text description.
+Date: Custom date picker (default to today).
+Receipts: UI placeholder for photo attachments.
+Calculation: All monetary values are strictly rounded to 1 decimal place ($0.1).
+B. Game Session Tracking (Log Game)
+Purpose: Record results for multiplayer games (Poker, Mahjong, Blackjack).
+Mechanics:
+Select game type from a visual grid.
+Input individual win/loss amounts for each player.
+Supports positive (+) and negative (-) inputs.
+Updates user balances immediately upon saving.
+C. Social Management (Friends & Groups)
+Friends: Add individuals with a custom name and select from preset cartoon avatars.
+Groups: Create groups with a name and preset icon, composed of existing friends.
+Management:
+View net balance status (Owed to You / You Owe).
+Remove friends/groups (updates global list).
+Click-to-call/remind actions (UI only).
+D. Settlement System
+Partial & Full Settlements: Users can settle debts partially or in full.
+Validation: Prevents settling more than the outstanding balance.
+Directionality:
+You Owe: You pay them (reduces your liability).
+Owed to You: They pay you (reduces your asset).
+Recording: Creates a distinct "Payment" transaction type to zero out or reduce balances.
+E. Analytics & Leaderboards
+Hall of Fame: Ranks players by Net Profit/Balance.
+Achievements: Visual cards for "Biggest Winner", "Win Streak", and "Most Played Game".
+Visualizations: Area charts showing net profit trends over time (last 30 days).
+2. App Structure & Pages
+1. Dashboard (Home)
+Header: Profile avatar, greeting, notification bell.
+Stats Grid: Four actionable cards that link to filtered history views:
+You Owe: Total liabilities (Red).
+Owed to You: Total assets (Green).
+Net Loan History: Overall financial standing (Blue).
+Last Game: Result of the most recent game session.
+Friends Carousel: Horizontal scroll of friends, sorted by balance magnitude.
+Winner Highlight: Gold border/crown for friends with positive balances.
+Recent Activity: List of last 10 transactions with icons, titles, dates, and amounts.
+Floating Action Button (FAB): Expands to "Log Game" and "Log Loan".
+2. Log Loan Screen
+UI: Large amount display, clean modal interfaces for participant selection.
+Modals: "Who is involved?" modal separates Friends and Groups for easy selection.
+Validation: Error toasts for invalid amounts or mismatched splits.
+3. Log Game Screen
+UI: Grid of game cards (Poker, Mahjong, Blackjack).
+Input List: Rows for every friend to input their specific result.
+4. Friends & Groups Screen
+Tabs: Filter list by "All", "Friends", or "Groups".
+List Item: Avatar, Name, Balance Status (Text + Color coded).
+Add Button: Context-aware FAB.
+Add Friend Modal: Name input, Icon grid.
+Add Group Modal: Name input, Member checklist, Icon grid.
+5. Analytics Screen
+Tabs: Leaderboards vs. Trends.
+Filters: Chips for Time Range (This Month) and Game Type.
+Content: Ranked list of users, Achievement cards, Responsive Charts (Recharts).
+6. Profile Screen
+User Info: Large avatar, name, handle.
+Summary Cards: Total Won, Total Groups.
+Menu: Settings, Payment Methods, Privacy, Help.
+7. Detail Views
+Friend Detail:
+Specific user balance status (e.g., "Owes you $50.5").
+Actions: "Settle Up" (triggers modal), "Remind".
+History: List of transactions involving only this user.
+Menu: Option to Remove friend.
+Activity Detail:
+Large visual representation of the transaction.
+Breakdown: List of "Who was involved" showing exactly who paid/owed what.
+Action: "Delete Activity" button (reverts balances).
+Stats Detail:
+Filtered list of transactions based on the dashboard card clicked.
+Logic:
+You Owe View: Shows loans taken AND your repayments.
+Owed View: Shows loans given AND payments received.
+3. Data Logic & State Management
+Context (DataContext.tsx)
+Global State: Holds users array and transactions array.
+Persistence: In-memory (for this demo version).
+Rounding: All financial modifications pass through a roundAmount helper to ensure 1-decimal precision.
+Transaction Types:
+loan: One-way debt creation.
+expense: Shared cost splitting.
+game: Zero-sum or multi-party score logging.
+payment: Debt settlement.
+Balance Logic:
+addTransaction:Iterates through involvedUsers, updating their specific balance property in the global users state.
+removeTransaction: Finds the transaction by ID, reverses the balance operation for all involved users, and removes the record.
+4. UI & Design System
+Tech Stack: React, Tailwind CSS, Spline Sans Font, Material Symbols.
+Color Palette:
+Backgrounds: Light Gray (#F8F9FA) / Dark Slate (#111827).
+Primary:
+Teal (#14B8A6) - General UI.
+Blue (#4A90E2) - Financials/Net.
+Green (#0df20d) - Loans/Positive actions.
+Status:
+Positive (#7ED321) - Assets/Winning.
+Negative (#D0021B) - Debts/Losing/Logout.
+Accents: Coral (#F78B78), Yellow (#FBBF24) for Game UI.
+Components:
+Cards: Rounded-2xl, White background, Light shadow.
+Inputs: Large text, invisible borders, distinct focus rings.
+Avatars: Circular, sourced from Google/DiceBear, used heavily for identification.
+Navigation: Sticky Bottom Nav with active state indicators.
+Animations: active:scale-95 on buttons, slide-in/fade-in modals using Tailwind animate utilities.
