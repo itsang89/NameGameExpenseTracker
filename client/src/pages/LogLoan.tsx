@@ -79,6 +79,16 @@ export default function LogLoan({ onBack }: LogLoanProps) {
     const friendIds = selectedUsers.filter(id => !users.find(u => u.id === id)?.isGroup);
     const splitAmount = getEqualSplit();
 
+    const friendAmounts = friendIds.map(id => ({
+      userId: id,
+      amount: splitType === 'equal' ? splitAmount : (unequalAmounts[id] || 0),
+    }));
+
+    // Add current user with negative total (they lent the money)
+    const totalAmount = splitType === 'equal' 
+      ? splitAmount * friendIds.length
+      : getUnequalTotal();
+
     addTransaction({
       type: 'loan',
       title: `${categories.find(c => c.id === selectedCategory)?.label || 'Expense'}`,
@@ -86,10 +96,10 @@ export default function LogLoan({ onBack }: LogLoanProps) {
       date,
       totalAmount: amount,
       notes,
-      involvedUsers: friendIds.map(id => ({
-        userId: id,
-        amount: splitType === 'equal' ? splitAmount : (unequalAmounts[id] || 0),
-      })),
+      involvedUsers: [
+        { userId: 'current', amount: totalAmount },
+        ...friendAmounts,
+      ],
     });
 
     toast({ title: 'Loan logged!', description: `$${amount.toFixed(1)} split among ${friendIds.length + 1} people` });
