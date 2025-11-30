@@ -210,10 +210,17 @@ export default function LogLoan({ onBack }: LogLoanProps) {
                               type="number"
                               step="0.1"
                               value={unequalAmounts[id] || ''}
-                              onChange={(e) => setUnequalAmounts(prev => ({
-                                ...prev,
-                                [id]: parseFloat(e.target.value) || 0
-                              }))}
+                              onChange={(e) => {
+                                const newAmount = parseFloat(e.target.value) || 0;
+                                const newUnequalAmounts = {
+                                  ...unequalAmounts,
+                                  [id]: newAmount
+                                };
+                                setUnequalAmounts(newUnequalAmounts);
+                                // Update main amount to the sum of all unequal amounts
+                                const total = Object.values(newUnequalAmounts).reduce((sum, val) => sum + val, 0);
+                                setAmount(Math.round(total * 10) / 10);
+                              }}
                               className="w-24 neu-inset border-none"
                               data-testid={`input-unequal-${id}`}
                             />
