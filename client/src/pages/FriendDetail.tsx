@@ -15,10 +15,11 @@ interface FriendDetailProps {
 }
 
 export default function FriendDetail({ friendId, onBack, onTransactionClick }: FriendDetailProps) {
-  const { users, transactions, settleUp } = useData();
+  const { users, transactions, settleUp, removeUser, removeTransaction } = useData();
   const { toast } = useToast();
   const [showSettleDialog, setShowSettleDialog] = useState(false);
   const [settleAmount, setSettleAmount] = useState('');
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   
   const friend = users.find(u => u.id === friendId);
   const friendTransactions = transactions.filter(tx => 
@@ -61,6 +62,20 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
     toast({ title: 'Settled!', description: `Payment of $${amount.toFixed(1)} recorded with ${friend.name}` });
     setShowSettleDialog(false);
     setSettleAmount('');
+  };
+
+  const handleDeleteFriend = () => {
+    // Remove all transactions involving this friend
+    const friendTransactions = transactions.filter(tx => 
+      tx.involvedUsers.some(u => u.userId === friendId)
+    );
+    friendTransactions.forEach(tx => removeTransaction(tx.id));
+    
+    // Remove the friend
+    removeUser(friendId);
+    
+    toast({ title: 'Deleted', description: `${friend.name} has been removed` });
+    onBack();
   };
 
   const balanceDisplay = getBalanceDisplay(friend.balance);
@@ -127,7 +142,7 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
             </button>
             <button 
               className="flex items-center gap-2 px-4 py-2 rounded-lg neu-btn text-negative active:neu-click"
-              onClick={() => console.log('Delete', friend.name)}
+              onClick={() => setShowDeleteDialog(true)}
               data-testid={`button-delete-${friendId}`}
             >
               <Trash2 className="w-4 h-4" />
@@ -179,6 +194,33 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
                     {settleAmount === '' ? 'Settle All' : 'Confirm'}
                   </Button>
                 </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {/* Delete Confirmation Dialog */}
+          <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+            <DialogContent className="w-[90%] rounded-2xl neu-raised">
+              <DialogHeader>
+                <DialogTitle>Delete Friend?</DialogTitle>
+                <DialogDescription>
+                  This will remove {friend.name} and all associated transactions. This action cannot be undone.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowDeleteDialog(false)}
+                  className="flex-1 active:neu-click"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleDeleteFriend}
+                  className="flex-1 active:neu-click bg-negative text-negative-foreground hover:bg-negative/90"
+                >
+                  Delete
+                </Button>
               </div>
             </DialogContent>
           </Dialog>
