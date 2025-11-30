@@ -42,6 +42,8 @@ interface DataContextType {
   getTotalOwed: () => number;
   getTotalOwedToYou: () => number;
   getNetBalance: () => number;
+  getLoanBalance: () => number;
+  getGameBalance: () => number;
   getLastGame: () => Transaction | undefined;
 }
 
@@ -208,6 +210,34 @@ export function DataProvider({ children }: { children: ReactNode }) {
     return roundAmount(users.filter(u => !u.isGroup).reduce((sum, u) => sum + u.balance, 0));
   }, [users]);
 
+  const getLoanBalance = useCallback(() => {
+    // Calculate balance from loan and expense transactions only
+    let loanBalance = 0;
+    transactions
+      .filter(t => t.type === 'loan' || t.type === 'expense')
+      .forEach(tx => {
+        const involvement = tx.involvedUsers.find(u => u.userId === 'current');
+        if (involvement) {
+          loanBalance += involvement.amount;
+        }
+      });
+    return roundAmount(loanBalance);
+  }, [transactions]);
+
+  const getGameBalance = useCallback(() => {
+    // Calculate balance from game transactions only
+    let gameBalance = 0;
+    transactions
+      .filter(t => t.type === 'game')
+      .forEach(tx => {
+        const involvement = tx.involvedUsers.find(u => u.userId === 'current');
+        if (involvement) {
+          gameBalance += involvement.amount;
+        }
+      });
+    return roundAmount(gameBalance);
+  }, [transactions]);
+
   const getLastGame = useCallback(() => {
     return transactions.find(t => t.type === 'game');
   }, [transactions]);
@@ -227,6 +257,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
       getTotalOwed,
       getTotalOwedToYou,
       getNetBalance,
+      getLoanBalance,
+      getGameBalance,
       getLastGame,
     }}>
       {children}

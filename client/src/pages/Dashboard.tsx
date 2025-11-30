@@ -19,13 +19,14 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTransactionClick, onStatCardClick, onViewAllFriends, onViewAllTransactions }: DashboardProps) {
-  const { currentUser, users, transactions, getTotalOwed, getTotalOwedToYou, getNetBalance, getLastGame } = useData();
+  const { currentUser, users, transactions, getTotalOwed, getTotalOwedToYou, getLoanBalance, getGameBalance, getLastGame } = useData();
   const [showNotifications, setShowNotifications] = useState(false);
 
   const friends = users.filter(u => !u.isGroup).sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance));
   const recentTransactions = transactions.slice(0, 5);
   const lastGame = getLastGame();
-  const lastGameAmount = lastGame?.involvedUsers.reduce((sum, u) => sum + u.amount, 0) ?? 0;
+  const loanBalance = getLoanBalance();
+  const gameBalance = getGameBalance();
 
   const currentUserAvatarUrl = `https://api.dicebear.com/7.x/${currentUser.avatar}/svg?seed=${currentUser.name}`;
 
@@ -42,7 +43,7 @@ export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTrans
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Welcome back,</p>
-              <p className="font-semibold text-foreground">Player</p>
+              <p className="font-semibold text-foreground">{currentUser.name}</p>
             </div>
           </div>
           <button 
@@ -62,11 +63,8 @@ export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTrans
       <main className="px-4 space-y-6">
         <section>
           <div className="grid grid-cols-2 gap-4">
-            <StatCard type="owed" amount={getTotalOwedToYou()} onClick={() => onStatCardClick?.('loan')} />
-            <StatCard type="net" amount={getNetBalance()} onClick={onViewAllTransactions} />
-          </div>
-          <div className="mt-4">
-            <StatCard type="game" amount={lastGameAmount} label={lastGame?.title || 'No games yet'} onClick={() => onStatCardClick?.('game')} />
+            <StatCard type="owed" amount={loanBalance} onClick={() => onStatCardClick?.('loan')} />
+            <StatCard type="game" amount={gameBalance} onClick={() => onStatCardClick?.('game')} />
           </div>
         </section>
 
