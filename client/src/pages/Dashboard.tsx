@@ -88,7 +88,6 @@ export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTrans
                   avatar={friend.avatar}
                   balance={friend.balance}
                   showBalance
-                  showWinnerBadge
                   onClick={() => onFriendClick(friend.id)}
                 />
               ))}
