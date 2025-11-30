@@ -145,7 +145,12 @@ export default function TransactionDetail({ transactionId, onBack }: Transaction
 
         {/* Participants */}
         <div>
-          <h3 className="text-lg font-semibold mb-4">Participants</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold">Participants</h3>
+            {transaction.type === 'loan' && (
+              <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded">Original Amount</span>
+            )}
+          </div>
           <div className="space-y-3">
             {transaction.involvedUsers.map((involvement) => {
               const user = users.find(u => u.id === involvement.userId);
