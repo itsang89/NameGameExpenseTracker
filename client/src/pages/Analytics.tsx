@@ -9,8 +9,14 @@ import { useData } from '@/contexts/DataContext';
 export default function Analytics() {
   const { users, transactions } = useData();
   const [activeTab, setActiveTab] = useState('leaderboard');
+  const [prevTab, setPrevTab] = useState('leaderboard');
   const [timeFilter, setTimeFilter] = useState('month');
   const [gameFilter, setGameFilter] = useState('all');
+
+  const handleTabChange = (tab: string) => {
+    setPrevTab(activeTab);
+    setActiveTab(tab);
+  };
 
   const friends = users.filter(u => !u.isGroup);
   const leaderboard = [...friends].sort((a, b) => b.balance - a.balance);
@@ -68,23 +74,23 @@ export default function Analytics() {
 
       <main className="px-4 space-y-4">
         <div className="p-1 rounded-2xl neu-raised">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <Tabs value={activeTab} onValueChange={handleTabChange}>
             <TabsList className="w-full bg-transparent gap-1">
               <TabsTrigger 
                 value="leaderboard" 
-                className={`flex-1 rounded-xl py-2.5 ${activeTab === 'leaderboard' ? 'neu-pressed' : 'neu-btn'}`}
+                className={`flex-1 rounded-xl py-2.5 ${activeTab === 'leaderboard' ? 'neu-pressed' : 'neu-btn'} active:neu-click`}
               >
                 Leaderboard
               </TabsTrigger>
               <TabsTrigger 
                 value="trends" 
-                className={`flex-1 rounded-xl py-2.5 ${activeTab === 'trends' ? 'neu-pressed' : 'neu-btn'}`}
+                className={`flex-1 rounded-xl py-2.5 ${activeTab === 'trends' ? 'neu-pressed' : 'neu-btn'} active:neu-click`}
               >
                 Trends
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="leaderboard" className="space-y-6 mt-4 px-2 pb-2">
+            <TabsContent value="leaderboard" className={`space-y-6 mt-4 px-2 pb-2 ${activeTab === 'leaderboard' && prevTab !== 'leaderboard' ? 'tab-enter-right' : ''}`}>
               <div className="flex gap-2 flex-wrap">
                 <Badge 
                   variant={timeFilter === 'week' ? 'default' : 'outline'}
@@ -159,7 +165,7 @@ export default function Analytics() {
               </section>
             </TabsContent>
 
-            <TabsContent value="trends" className="space-y-6 mt-4 px-2 pb-2">
+            <TabsContent value="trends" className={`space-y-6 mt-4 px-2 pb-2 ${activeTab === 'trends' && prevTab !== 'trends' ? 'tab-enter-left' : ''}`}>
               <section>
                 <h3 className="text-lg font-semibold mb-3">Net Profit (30 Days)</h3>
                 <div className="p-5 rounded-2xl bg-background neu-raised">

@@ -442,6 +442,71 @@
     animation: neu-click-animation 150ms ease-out;
   }
 
+  /* Tab swiping animations */
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideOutLeft {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideOutRight {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+  }
+
+  .tab-enter-right {
+    animation: slideInRight 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .tab-exit-left {
+    animation: slideOutLeft 300ms ease-in;
+  }
+
+  .tab-enter-left {
+    animation: slideInLeft 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .tab-exit-right {
+    animation: slideOutRight 300ms ease-in;
+  }
+
+  .view-enter-right {
+    animation: slideInRight 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
   .hover-elevate:hover:not(.no-default-hover-elevate)::after,
   .active-elevate:active:not(.no-default-active-elevate)::after {
     background-color: var(--elevate-1);
