@@ -102,7 +102,7 @@ export default function LogLoan({ onBack }: LogLoanProps) {
         <div className="flex items-center gap-3 p-3 rounded-2xl neu-raised">
           <button 
             onClick={onBack} 
-            className="p-2 rounded-xl neu-interactive-sm"
+            className="p-2 rounded-xl neu-interactive-sm active:neu-click"
             data-testid="button-back-loan"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -111,7 +111,7 @@ export default function LogLoan({ onBack }: LogLoanProps) {
         </div>
       </header>
 
-      <main className="px-4 space-y-6">
+      <main className="px-4 space-y-6 pb-32">
         <section className="py-6">
           <AmountInput value={amount} onChange={setAmount} />
           <p className="text-center text-muted-foreground mt-3 font-medium">Amount You Lent</p>

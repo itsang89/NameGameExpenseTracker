@@ -57,7 +57,7 @@ export default function TransactionDetail({ transactionId, onBack }: Transaction
           <div className="flex items-center gap-3">
             <button 
               onClick={onBack} 
-              className="p-2 rounded-xl neu-interactive-sm"
+              className="p-2 rounded-xl neu-interactive-sm active:neu-click"
               data-testid="button-back-transaction-detail"
             >
               <ArrowLeft className="w-5 h-5" />
@@ -66,7 +66,7 @@ export default function TransactionDetail({ transactionId, onBack }: Transaction
           </div>
           <button 
             onClick={handleDelete} 
-            className="p-2 rounded-xl neu-interactive-sm text-negative"
+            className="p-2 rounded-xl neu-interactive-sm text-negative active:neu-click"
             data-testid="button-delete-transaction"
           >
             <Trash2 className="w-5 h-5" />

@@ -50,7 +50,7 @@ export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTrans
               setShowNotifications(!showNotifications);
               console.log('Notifications toggled');
             }}
-            className="p-3 rounded-xl neu-interactive-sm relative"
+            className="p-3 rounded-xl neu-interactive-sm relative active:neu-click"
             data-testid="button-notifications"
           >
             <Bell className="w-5 h-5 text-muted-foreground" />
@@ -74,7 +74,7 @@ export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTrans
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-foreground">Friends</h2>
             <button 
-              className="text-sm text-primary font-semibold flex items-center gap-1 px-3 py-1.5 rounded-lg neu-interactive-sm"
+              className="text-sm text-primary font-semibold flex items-center gap-1 px-3 py-1.5 rounded-lg neu-interactive-sm active:neu-click"
               onClick={onViewAllFriends}
               data-testid="button-view-all-friends"
             >

@@ -425,6 +425,23 @@
     /* sits in front of content */
   }
 
+  /* Click animation for interactive elements */
+  @keyframes neu-click-animation {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.97);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .neu-click {
+    animation: neu-click-animation 150ms ease-out;
+  }
+
   .hover-elevate:hover:not(.no-default-hover-elevate)::after,
   .active-elevate:active:not(.no-default-active-elevate)::after {
     background-color: var(--elevate-1);

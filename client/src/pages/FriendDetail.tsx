@@ -1,5 +1,9 @@
+import { useState } from 'react';
 import { ArrowLeft, Phone, MessageCircle, Trash2, DollarSign } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import TransactionItem from '@/components/TransactionItem';
 import { useToast } from '@/hooks/use-toast';
 import { useData } from '@/contexts/DataContext';
@@ -13,6 +17,8 @@ interface FriendDetailProps {
 export default function FriendDetail({ friendId, onBack, onTransactionClick }: FriendDetailProps) {
   const { users, transactions, settleUp } = useData();
   const { toast } = useToast();
+  const [showSettleDialog, setShowSettleDialog] = useState(false);
+  const [settleAmount, setSettleAmount] = useState('');
   
   const friend = users.find(u => u.id === friendId);
   const friendTransactions = transactions.filter(tx => 
@@ -33,13 +39,16 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
     return { text: 'Settled up', color: 'text-muted-foreground' };
   };
 
-  const handleSettle = () => {
-    if (!friend || friend.balance === 0) {
-      toast({ title: 'Already settled', description: 'This friend has no outstanding balance' });
+  const handleSettleSubmit = () => {
+    const amount = parseFloat(settleAmount);
+    if (isNaN(amount) || amount <= 0) {
+      toast({ title: 'Invalid amount', description: 'Please enter a valid amount', variant: 'destructive' });
       return;
     }
-    settleUp(friendId, Math.abs(friend.balance));
-    toast({ title: 'Settled!', description: `Payment recorded with ${friend.name}` });
+    settleUp(friendId, amount);
+    toast({ title: 'Settled!', description: `Payment of $${amount.toFixed(1)} recorded with ${friend.name}` });
+    setShowSettleDialog(false);
+    setSettleAmount('');
   };
 
   const balanceDisplay = getBalanceDisplay(friend.balance);
@@ -51,7 +60,7 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
         <div className="flex items-center gap-3 p-3 rounded-2xl neu-raised">
           <button 
             onClick={onBack} 
-            className="p-2 rounded-xl neu-interactive-sm"
+            className="p-2 rounded-xl neu-interactive-sm active:neu-click"
             data-testid="button-back-friend-detail"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -80,8 +89,8 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
           <div className="flex gap-2 justify-center flex-wrap">
             {friend.balance !== 0 && (
               <button 
-                className="flex items-center gap-2 px-4 py-2 rounded-lg neu-btn text-positive font-semibold"
-                onClick={handleSettle}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg neu-btn text-positive font-semibold active:neu-click"
+                onClick={() => setShowSettleDialog(true)}
                 data-testid={`button-settle-${friendId}`}
               >
                 <DollarSign className="w-4 h-4" />
@@ -89,7 +98,7 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
               </button>
             )}
             <button 
-              className="flex items-center gap-2 px-4 py-2 rounded-lg neu-btn"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg neu-btn active:neu-click"
               onClick={() => console.log('Call', friend.name)}
               data-testid={`button-call-${friendId}`}
             >
@@ -97,7 +106,7 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
               Call
             </button>
             <button 
-              className="flex items-center gap-2 px-4 py-2 rounded-lg neu-btn"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg neu-btn active:neu-click"
               onClick={() => console.log('Message', friend.name)}
               data-testid={`button-message-${friendId}`}
             >
@@ -105,13 +114,54 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
               Message
             </button>
             <button 
-              className="flex items-center gap-2 px-4 py-2 rounded-lg neu-btn text-negative"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg neu-btn text-negative active:neu-click"
               onClick={() => console.log('Delete', friend.name)}
               data-testid={`button-delete-${friendId}`}
             >
               <Trash2 className="w-4 h-4" />
             </button>
           </div>
+
+          {/* Settle Dialog */}
+          <Dialog open={showSettleDialog} onOpenChange={setShowSettleDialog}>
+            <DialogContent className="w-[90%] rounded-2xl neu-raised">
+              <DialogHeader>
+                <DialogTitle>Settle Payment</DialogTitle>
+                <DialogDescription>
+                  Enter the amount to settle with {friend.name}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium mb-2">Current Balance: ${Math.abs(friend.balance).toFixed(1)}</p>
+                  <Input
+                    type="number"
+                    placeholder="Enter amount"
+                    value={settleAmount}
+                    onChange={(e) => setSettleAmount(e.target.value)}
+                    step="0.1"
+                    className="text-lg font-semibold neu-inset"
+                    data-testid="input-settle-amount"
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowSettleDialog(false)}
+                    className="flex-1 active:neu-click"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleSettleSubmit}
+                    className="flex-1 active:neu-click"
+                  >
+                    Confirm
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Transaction History */}

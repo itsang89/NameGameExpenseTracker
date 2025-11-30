@@ -21,6 +21,8 @@ export default function LogGame({ onBack }: LogGameProps) {
   const [date] = useState(new Date().toISOString().split('T')[0]);
 
   const friends = users.filter(u => !u.isGroup);
+  const currentUser = { id: 'you', name: 'You', avatar: 'avataaars' };
+  const playersWithYou = [currentUser, ...friends];
 
   const getTotal = () => {
     return Object.values(playerScores).reduce((sum, val) => sum + val, 0);
@@ -79,12 +81,12 @@ export default function LogGame({ onBack }: LogGameProps) {
   };
 
   return (
-    <div className="min-h-screen pb-8">
+    <div className="min-h-screen pb-32">
       <header className="sticky top-0 z-30 bg-background pt-4 px-4 pb-3">
         <div className="flex items-center gap-3 p-3 rounded-2xl neu-raised">
           <button 
             onClick={onBack}
-            className="p-2 rounded-xl neu-interactive-sm"
+            className="p-2 rounded-xl neu-interactive-sm active:neu-click"
             data-testid="button-back-game"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -118,31 +120,31 @@ export default function LogGame({ onBack }: LogGameProps) {
         <section>
           <h3 className="text-sm font-semibold text-muted-foreground mb-3">Player Results</h3>
           <div className="space-y-3">
-            {friends.map((friend) => (
-              <div key={friend.id} className="p-4 rounded-2xl bg-background neu-raised">
+            {playersWithYou.map((player) => (
+              <div key={player.id} className="p-4 rounded-2xl bg-background neu-raised">
                 <div className="flex items-center gap-3">
                   <div className="p-1 rounded-full neu-raised-sm">
                     <Avatar className="w-10 h-10">
-                      <AvatarImage src={`https://api.dicebear.com/7.x/${friend.avatar}/svg?seed=${friend.name}`} />
-                      <AvatarFallback>{friend.name[0]}</AvatarFallback>
+                      <AvatarImage src={player.id === 'you' ? `https://api.dicebear.com/7.x/${player.avatar}/svg?seed=You` : `https://api.dicebear.com/7.x/${player.avatar}/svg?seed=${player.name}`} />
+                      <AvatarFallback>{player.name[0]}</AvatarFallback>
                     </Avatar>
                   </div>
-                  <span className="flex-1 font-semibold">{friend.name}</span>
+                  <span className="flex-1 font-semibold">{player.name}</span>
                   <div className="flex items-center gap-2">
                     <Input
                       type="number"
                       step="0.1"
                       placeholder="0"
-                      value={playerScores[friend.id] || ''}
-                      onChange={(e) => handleScoreChange(friend.id, e.target.value)}
+                      value={playerScores[player.id] || ''}
+                      onChange={(e) => handleScoreChange(player.id, e.target.value)}
                       className={`w-28 text-right font-semibold neu-inset border-none ${
-                        (playerScores[friend.id] || 0) > 0 
+                        (playerScores[player.id] || 0) > 0 
                           ? 'text-positive' 
-                          : (playerScores[friend.id] || 0) < 0 
+                          : (playerScores[player.id] || 0) < 0 
                             ? 'text-negative' 
                             : ''
                       }`}
-                      data-testid={`input-score-${friend.id}`}
+                      data-testid={`input-score-${player.id}`}
                     />
                   </div>
                 </div>
