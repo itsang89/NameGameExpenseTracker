@@ -123,7 +123,14 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
           </div>
 
           {/* Settle Dialog */}
-          <Dialog open={showSettleDialog} onOpenChange={setShowSettleDialog}>
+          <Dialog open={showSettleDialog} onOpenChange={(open) => {
+            setShowSettleDialog(open);
+            if (open && friend.balance !== 0) {
+              setSettleAmount(Math.abs(friend.balance).toFixed(1));
+            } else if (!open) {
+              setSettleAmount('');
+            }
+          }}>
             <DialogContent className="w-[90%] rounded-2xl neu-raised">
               <DialogHeader>
                 <DialogTitle>Settle Payment</DialogTitle>
