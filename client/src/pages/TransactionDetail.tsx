@@ -1,5 +1,6 @@
-import { ArrowLeft, Calendar, DollarSign } from 'lucide-react';
+import { ArrowLeft, Calendar, DollarSign, Trash2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useToast } from '@/hooks/use-toast';
 import { useData, type Transaction } from '@/contexts/DataContext';
 
 interface TransactionDetailProps {
@@ -8,7 +9,8 @@ interface TransactionDetailProps {
 }
 
 export default function TransactionDetail({ transactionId, onBack }: TransactionDetailProps) {
-  const { transactions, users } = useData();
+  const { transactions, users, removeTransaction } = useData();
+  const { toast } = useToast();
   
   const transaction = transactions.find(t => t.id === transactionId);
 
@@ -42,18 +44,33 @@ export default function TransactionDetail({ transactionId, onBack }: Transaction
     return labels[category || 'other'] || category || 'Other';
   };
 
+  const handleDelete = () => {
+    removeTransaction(transactionId);
+    toast({ title: 'Deleted', description: 'Transaction has been removed' });
+    onBack();
+  };
+
   return (
     <div className="min-h-screen pb-8">
       <header className="sticky top-0 z-30 bg-background pt-4 px-4 pb-3">
-        <div className="flex items-center gap-3 p-3 rounded-2xl neu-raised">
+        <div className="flex items-center justify-between gap-3 p-3 rounded-2xl neu-raised">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={onBack} 
+              className="p-2 rounded-xl neu-interactive-sm"
+              data-testid="button-back-transaction-detail"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <h1 className="text-lg font-semibold">Transaction Details</h1>
+          </div>
           <button 
-            onClick={onBack} 
-            className="p-2 rounded-xl neu-interactive-sm"
-            data-testid="button-back-transaction-detail"
+            onClick={handleDelete} 
+            className="p-2 rounded-xl neu-interactive-sm text-negative"
+            data-testid="button-delete-transaction"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <Trash2 className="w-5 h-5" />
           </button>
-          <h1 className="text-lg font-semibold">Transaction Details</h1>
         </div>
       </header>
 

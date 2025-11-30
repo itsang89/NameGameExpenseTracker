@@ -107,14 +107,14 @@ export default function LogLoan({ onBack }: LogLoanProps) {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-lg font-semibold">Log Loan</h1>
+          <h1 className="text-lg font-semibold">Lend Money</h1>
         </div>
       </header>
 
       <main className="px-4 space-y-6">
         <section className="py-6">
           <AmountInput value={amount} onChange={setAmount} />
-          <p className="text-center text-muted-foreground mt-3 font-medium">Paid by You</p>
+          <p className="text-center text-muted-foreground mt-3 font-medium">Amount You Lent</p>
         </section>
 
         <section>

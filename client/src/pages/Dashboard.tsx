@@ -62,9 +62,10 @@ export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTrans
       <main className="px-4 space-y-6">
         <section>
           <div className="grid grid-cols-2 gap-4">
-            <StatCard type="owe" amount={getTotalOwed()} onClick={() => onStatCardClick?.('loan')} />
-            <StatCard type="owed" amount={getTotalOwedToYou()} onClick={() => onStatCardClick?.('expense')} />
+            <StatCard type="owed" amount={getTotalOwedToYou()} onClick={() => onStatCardClick?.('loan')} />
             <StatCard type="net" amount={getNetBalance()} onClick={onViewAllTransactions} />
+          </div>
+          <div className="mt-4">
             <StatCard type="game" amount={lastGameAmount} label={lastGame?.title || 'No games yet'} onClick={() => onStatCardClick?.('game')} />
           </div>
         </section>

@@ -1,6 +1,7 @@
-import { ArrowLeft, Phone, MessageCircle, Trash2 } from 'lucide-react';
+import { ArrowLeft, Phone, MessageCircle, Trash2, DollarSign } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import TransactionItem from '@/components/TransactionItem';
+import { useToast } from '@/hooks/use-toast';
 import { useData } from '@/contexts/DataContext';
 
 interface FriendDetailProps {
@@ -10,7 +11,8 @@ interface FriendDetailProps {
 }
 
 export default function FriendDetail({ friendId, onBack, onTransactionClick }: FriendDetailProps) {
-  const { users, transactions } = useData();
+  const { users, transactions, settleUp } = useData();
+  const { toast } = useToast();
   
   const friend = users.find(u => u.id === friendId);
   const friendTransactions = transactions.filter(tx => 
@@ -29,6 +31,15 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
     if (balance > 0) return { text: `Owes you $${balance.toFixed(1)}`, color: 'text-positive' };
     if (balance < 0) return { text: `You owe $${Math.abs(balance).toFixed(1)}`, color: 'text-negative' };
     return { text: 'Settled up', color: 'text-muted-foreground' };
+  };
+
+  const handleSettle = () => {
+    if (!friend || friend.balance === 0) {
+      toast({ title: 'Already settled', description: 'This friend has no outstanding balance' });
+      return;
+    }
+    settleUp(friendId, Math.abs(friend.balance));
+    toast({ title: 'Settled!', description: `Payment recorded with ${friend.name}` });
   };
 
   const balanceDisplay = getBalanceDisplay(friend.balance);
@@ -66,7 +77,17 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
             {balanceDisplay.text}
           </p>
 
-          <div className="flex gap-2 justify-center">
+          <div className="flex gap-2 justify-center flex-wrap">
+            {friend.balance !== 0 && (
+              <button 
+                className="flex items-center gap-2 px-4 py-2 rounded-lg neu-btn text-positive font-semibold"
+                onClick={handleSettle}
+                data-testid={`button-settle-${friendId}`}
+              >
+                <DollarSign className="w-4 h-4" />
+                Settle
+              </button>
+            )}
             <button 
               className="flex items-center gap-2 px-4 py-2 rounded-lg neu-btn"
               onClick={() => console.log('Call', friend.name)}
