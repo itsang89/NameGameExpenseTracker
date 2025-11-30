@@ -59,9 +59,9 @@ export default function TransactionItem({
   };
   
   const getAmountColor = () => {
-    if (type === 'payment') return 'text-primary';
     if (amount > 0) return 'text-positive';
     if (amount < 0) return 'text-negative';
+    if (type === 'payment') return 'text-primary';
     return 'text-foreground';
   };
 
