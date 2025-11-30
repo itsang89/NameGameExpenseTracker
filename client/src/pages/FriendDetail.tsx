@@ -40,11 +40,23 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
   };
 
   const handleSettleSubmit = () => {
-    const amount = parseFloat(settleAmount);
-    if (isNaN(amount) || amount <= 0) {
-      toast({ title: 'Invalid amount', description: 'Please enter a valid amount', variant: 'destructive' });
-      return;
+    let amount: number;
+    
+    // If amount is empty, settle the full balance
+    if (settleAmount === '') {
+      if (friend.balance === 0) {
+        toast({ title: 'Already settled', description: 'No balance to settle', variant: 'destructive' });
+        return;
+      }
+      amount = Math.abs(friend.balance);
+    } else {
+      amount = parseFloat(settleAmount);
+      if (isNaN(amount) || amount <= 0) {
+        toast({ title: 'Invalid amount', description: 'Please enter a valid amount', variant: 'destructive' });
+        return;
+      }
     }
+    
     settleUp(friendId, amount);
     toast({ title: 'Settled!', description: `Payment of $${amount.toFixed(1)} recorded with ${friend.name}` });
     setShowSettleDialog(false);
@@ -162,8 +174,9 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
                   <Button
                     onClick={handleSettleSubmit}
                     className="flex-1 active:neu-click"
+                    data-testid={settleAmount === '' ? 'button-settle-all' : 'button-confirm-settle'}
                   >
-                    Confirm
+                    {settleAmount === '' ? 'Settle All' : 'Confirm'}
                   </Button>
                 </div>
               </div>
