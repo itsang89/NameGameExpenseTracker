@@ -98,7 +98,7 @@ export default function LogLoan({ onBack }: LogLoanProps) {
       notes,
       involvedUsers: [
         { userId: 'current', amount: totalAmount },
-        ...friendAmounts,
+        ...friendAmounts.map(fa => ({ ...fa, amount: -fa.amount })),
       ],
     });
 
