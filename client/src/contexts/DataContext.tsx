@@ -53,7 +53,13 @@ const roundAmount = (amount: number): number => {
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-const initialUsers: User[] = [];
+const initialUsers: User[] = [
+  { id: '1', name: 'Alex', avatar: 'adventurer', balance: 0 },
+  { id: '2', name: 'Sarah', avatar: 'avataaars', balance: 0 },
+  { id: '3', name: 'Mike', avatar: 'bottts', balance: 0 },
+  { id: '4', name: 'Emma', avatar: 'big-smile', balance: 0 },
+  { id: '5', name: 'Chris', avatar: 'micah', balance: 0 },
+];
 
 const initialTransactions: Transaction[] = [];
 
