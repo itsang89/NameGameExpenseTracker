@@ -43,6 +43,12 @@ export default function StatCard({ type, amount, label, onClick }: StatCardProps
   const Icon = config.icon;
   const displayLabel = label || config.label;
   
+  const getAmountColor = () => {
+    if (amount < 0) return 'text-negative';
+    if (amount > 0) return 'text-positive';
+    return config.textClass;
+  };
+  
   const formatAmount = (val: number) => {
     const prefix = type === 'owe' ? '-' : type === 'game' && val < 0 ? '-' : type === 'game' && val > 0 ? '+' : '';
     return `${prefix}$${Math.abs(val).toFixed(1)}`;
@@ -61,7 +67,7 @@ export default function StatCard({ type, amount, label, onClick }: StatCardProps
       </div>
       <div className="mt-4">
         <p className="text-sm text-muted-foreground font-medium">{displayLabel}</p>
-        <p className={`text-2xl font-bold mt-1 ${config.textClass}`}>
+        <p className={`text-2xl font-bold mt-1 ${getAmountColor()}`}>
           {formatAmount(amount)}
         </p>
       </div>
