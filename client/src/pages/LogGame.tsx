@@ -13,7 +13,7 @@ interface LogGameProps {
 type GameType = 'poker' | 'mahjong' | 'blackjack';
 
 export default function LogGame({ onBack }: LogGameProps) {
-  const { users, addTransaction } = useData();
+  const { currentUser: dataCurrentUser, users, addTransaction } = useData();
   const { toast } = useToast();
   
   const [selectedGame, setSelectedGame] = useState<GameType>('poker');
@@ -21,8 +21,7 @@ export default function LogGame({ onBack }: LogGameProps) {
   const [date] = useState(new Date().toISOString().split('T')[0]);
 
   const friends = users.filter(u => !u.isGroup);
-  const currentUser = { id: 'you', name: 'You', avatar: 'avataaars' };
-  const playersWithYou = [currentUser, ...friends];
+  const playersWithYou = [dataCurrentUser, ...friends];
 
   const getTotal = () => {
     return Object.values(playerScores).reduce((sum, val) => sum + val, 0);
@@ -125,7 +124,7 @@ export default function LogGame({ onBack }: LogGameProps) {
                 <div className="flex items-center gap-3">
                   <div className="p-1 rounded-full neu-raised-sm">
                     <Avatar className="w-10 h-10">
-                      <AvatarImage src={player.id === 'you' ? `https://api.dicebear.com/7.x/${player.avatar}/svg?seed=You` : `https://api.dicebear.com/7.x/${player.avatar}/svg?seed=${player.name}`} />
+                      <AvatarImage src={`https://api.dicebear.com/7.x/${player.avatar}/svg?seed=${player.name}`} />
                       <AvatarFallback>{player.name[0]}</AvatarFallback>
                     </Avatar>
                   </div>

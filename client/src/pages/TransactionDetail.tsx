@@ -12,6 +12,7 @@ export default function TransactionDetail({ transactionId, onBack }: Transaction
   const { transactions, users, removeTransaction } = useData();
   const { toast } = useToast();
   
+  const { currentUser } = useData();
   const transaction = transactions.find(t => t.id === transactionId);
 
   if (!transaction) {
@@ -153,7 +154,7 @@ export default function TransactionDetail({ transactionId, onBack }: Transaction
           </div>
           <div className="space-y-3">
             {transaction.involvedUsers.map((involvement) => {
-              const user = users.find(u => u.id === involvement.userId);
+              const user = involvement.userId === 'current' ? currentUser : users.find(u => u.id === involvement.userId);
               if (!user) return null;
 
               const avatarUrl = `https://api.dicebear.com/7.x/${user.avatar}/svg?seed=${user.name}`;
@@ -196,7 +197,7 @@ export default function TransactionDetail({ transactionId, onBack }: Transaction
                   </div>
                   <div className="space-y-2">
                     {settlement.involvedUsers.map((involvement) => {
-                      const user = users.find(u => u.id === involvement.userId);
+                      const user = involvement.userId === 'current' ? currentUser : users.find(u => u.id === involvement.userId);
                       return (
                         <div key={involvement.userId} className="flex items-center justify-between text-sm">
                           <span className="text-muted-foreground">{user?.name || 'Unknown'}</span>
