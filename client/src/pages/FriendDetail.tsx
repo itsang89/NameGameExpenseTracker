@@ -173,7 +173,6 @@ export default function FriendDetail({ friendId, onBack, onTransactionClick }: F
                     placeholder="Enter amount"
                     value={settleAmount}
                     onChange={(e) => setSettleAmount(e.target.value)}
-                    step="0.1"
                     className="text-lg font-semibold neu-inset"
                     data-testid="input-settle-amount"
                   />

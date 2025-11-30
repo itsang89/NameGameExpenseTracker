@@ -133,7 +133,6 @@ export default function LogGame({ onBack }: LogGameProps) {
                   <div className="flex items-center gap-2">
                     <Input
                       type="number"
-                      step="0.1"
                       placeholder="0"
                       value={playerScores[player.id] || ''}
                       onChange={(e) => handleScoreChange(player.id, e.target.value)}

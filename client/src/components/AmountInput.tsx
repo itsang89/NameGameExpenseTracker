@@ -40,7 +40,7 @@ export default function AmountInput({ value, onChange, className = '' }: AmountI
       <span className="text-5xl font-bold text-muted-foreground mr-2">$</span>
       <input
         type="text"
-        inputMode="decimal"
+        inputMode="numeric"
         value={displayValue}
         onChange={handleChange}
         onBlur={handleBlur}

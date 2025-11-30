@@ -208,7 +208,6 @@ export default function LogLoan({ onBack }: LogLoanProps) {
                             <span className="text-muted-foreground">$</span>
                             <Input
                               type="number"
-                              step="0.1"
                               value={unequalAmounts[id] || ''}
                               onChange={(e) => {
                                 const newAmount = parseFloat(e.target.value) || 0;
