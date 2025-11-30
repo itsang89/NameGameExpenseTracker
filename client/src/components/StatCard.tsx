@@ -46,7 +46,7 @@ export default function StatCard({ type, amount, label, onClick }: StatCardProps
   const getAmountColor = () => {
     if (amount < 0) return 'text-negative';
     if (amount > 0) return 'text-positive';
-    return config.textClass;
+    return 'text-muted-foreground';
   };
   
   const formatAmount = (val: number) => {
