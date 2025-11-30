@@ -1,21 +1,42 @@
-import { Settings, CreditCard, Shield, HelpCircle, LogOut, ChevronRight, Moon, Sun } from 'lucide-react';
+import { useState } from 'react';
+import { Settings, CreditCard, Shield, HelpCircle, LogOut, ChevronRight, Moon, Sun, Edit2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useData } from '@/contexts/DataContext';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProfileProps {
   isDarkMode: boolean;
   onToggleDarkMode: () => void;
 }
 
+const avatarOptions = ['lorelei', 'adventurer', 'avataaars', 'bottts', 'big-smile', 'micah'];
+
 export default function Profile({ isDarkMode, onToggleDarkMode }: ProfileProps) {
-  const { currentUser, users, transactions } = useData();
+  const { currentUser, users, transactions, updateCurrentUser } = useData();
+  const { toast } = useToast();
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editName, setEditName] = useState(currentUser.name);
+  const [editAvatar, setEditAvatar] = useState(currentUser.avatar);
   
   const totalWon = users.filter(u => !u.isGroup && u.balance > 0).reduce((sum, u) => sum + u.balance, 0);
   const totalGroups = users.filter(u => u.isGroup).length;
   const gameCount = transactions.filter(t => t.type === 'game').length;
 
   const avatarUrl = `https://api.dicebear.com/7.x/${currentUser.avatar}/svg?seed=${currentUser.name}`;
+
+  const handleSaveProfile = () => {
+    if (!editName.trim()) {
+      toast({ title: 'Invalid name', description: 'Please enter a name', variant: 'destructive' });
+      return;
+    }
+    updateCurrentUser(editName.trim(), editAvatar);
+    toast({ title: 'Profile updated!', description: 'Your profile has been saved' });
+    setShowEditDialog(false);
+  };
 
   const menuItems = [
     { icon: Settings, label: 'Settings', action: () => console.log('Settings') },
@@ -34,14 +55,27 @@ export default function Profile({ isDarkMode, onToggleDarkMode }: ProfileProps) 
 
       <main className="px-4 space-y-6">
         <section className="flex flex-col items-center py-6">
-          <div className="p-2 rounded-full neu-raised">
-            <Avatar className="w-24 h-24 ring-4 ring-primary/20">
-              <AvatarImage src={avatarUrl} alt={currentUser.name} />
-              <AvatarFallback>Y</AvatarFallback>
-            </Avatar>
+          <div className="relative">
+            <div className="p-2 rounded-full neu-raised">
+              <Avatar className="w-24 h-24 ring-4 ring-primary/20">
+                <AvatarImage src={avatarUrl} alt={currentUser.name} />
+                <AvatarFallback>Y</AvatarFallback>
+              </Avatar>
+            </div>
+            <button
+              onClick={() => {
+                setEditName(currentUser.name);
+                setEditAvatar(currentUser.avatar);
+                setShowEditDialog(true);
+              }}
+              className="absolute -bottom-1 -right-1 p-2 rounded-full bg-primary text-primary-foreground neu-btn active:neu-click"
+              data-testid="button-edit-profile"
+            >
+              <Edit2 className="w-4 h-4" />
+            </button>
           </div>
-          <h2 className="text-xl font-bold mt-4">Player</h2>
-          <p className="text-muted-foreground">@player</p>
+          <h2 className="text-xl font-bold mt-4">{currentUser.name}</h2>
+          <p className="text-muted-foreground">@{currentUser.name.toLowerCase().replace(/\s+/g, '')}</p>
         </section>
 
         <section className="grid grid-cols-3 gap-3">
@@ -106,6 +140,64 @@ export default function Profile({ isDarkMode, onToggleDarkMode }: ProfileProps) 
             </button>
           </div>
         </section>
+
+        {/* Edit Profile Dialog */}
+        <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+          <DialogContent className="w-[90%] rounded-2xl neu-raised">
+            <DialogHeader>
+              <DialogTitle>Edit Profile</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-semibold text-muted-foreground mb-2 block">Name</label>
+                <Input
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Enter your name"
+                  className="neu-inset text-lg font-semibold"
+                  data-testid="input-profile-name"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-muted-foreground mb-2 block">Avatar</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {avatarOptions.map((avatar) => (
+                    <button
+                      key={avatar}
+                      onClick={() => setEditAvatar(avatar)}
+                      className={`p-3 rounded-xl transition-all ${
+                        editAvatar === avatar 
+                          ? 'neu-pressed ring-2 ring-primary' 
+                          : 'neu-interactive'
+                      }`}
+                      data-testid={`avatar-option-${avatar}`}
+                    >
+                      <Avatar className="w-12 h-12 mx-auto">
+                        <AvatarImage src={`https://api.dicebear.com/7.x/${avatar}/svg?seed=test`} />
+                        <AvatarFallback>{avatar[0]}</AvatarFallback>
+                      </Avatar>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowEditDialog(false)}
+                  className="flex-1 active:neu-click"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSaveProfile}
+                  className="flex-1 active:neu-click"
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );

@@ -32,6 +32,7 @@ interface DataContextType {
   currentUser: User;
   users: User[];
   transactions: Transaction[];
+  updateCurrentUser: (name: string, avatar: string) => void;
   addUser: (user: Omit<User, 'id' | 'balance'>) => void;
   removeUser: (id: string) => void;
   addTransaction: (transaction: Omit<Transaction, 'id'>) => void;
@@ -110,7 +111,7 @@ const initialTransactions: Transaction[] = [
 ];
 
 export function DataProvider({ children }: { children: ReactNode }) {
-  const [currentUser] = useState<User>({
+  const [currentUser, setCurrentUser] = useState<User>({
     id: 'current',
     name: 'You',
     avatar: 'lorelei',
@@ -119,6 +120,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
   
   const [users, setUsers] = useState<User[]>(initialUsers);
   const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
+
+  const updateCurrentUser = useCallback((name: string, avatar: string) => {
+    setCurrentUser(prev => ({ ...prev, name, avatar }));
+  }, []);
 
   const addUser = useCallback((userData: Omit<User, 'id' | 'balance'>) => {
     const newUser: User = {
@@ -212,6 +217,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       currentUser,
       users,
       transactions,
+      updateCurrentUser,
       addUser,
       removeUser,
       addTransaction,
