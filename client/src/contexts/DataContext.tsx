@@ -211,10 +211,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
   }, [users]);
 
   const getLoanBalance = useCallback(() => {
-    // Calculate balance from loan and expense transactions only
+    // Calculate balance from loan transactions only
     let loanBalance = 0;
     transactions
-      .filter(t => t.type === 'loan' || t.type === 'expense')
+      .filter(t => t.type === 'loan')
       .forEach(tx => {
         const involvement = tx.involvedUsers.find(u => u.userId === 'current');
         if (involvement) {
