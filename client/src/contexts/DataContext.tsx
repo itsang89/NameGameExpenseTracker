@@ -53,64 +53,9 @@ const roundAmount = (amount: number): number => {
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-// todo: remove mock functionality - sample data for demo
-const initialUsers: User[] = [
-  { id: '1', name: 'Alex', avatar: 'adventurer', balance: 45.5 },
-  { id: '2', name: 'Sarah', avatar: 'avataaars', balance: -32.0 },
-  { id: '3', name: 'Mike', avatar: 'bottts', balance: 120.0 },
-  { id: '4', name: 'Emma', avatar: 'big-smile', balance: -15.5 },
-  { id: '5', name: 'Chris', avatar: 'micah', balance: 0 },
-  { id: 'g1', name: 'Poker Night', avatar: 'initials', balance: 0, isGroup: true, members: ['1', '2', '3'] },
-  { id: 'g2', name: 'Roommates', avatar: 'initials', balance: 0, isGroup: true, members: ['2', '4', '5'] },
-];
+const initialUsers: User[] = [];
 
-const initialTransactions: Transaction[] = [
-  {
-    id: 't1',
-    type: 'loan',
-    title: 'Dinner at Olive Garden',
-    category: 'restaurant',
-    date: '2025-11-27',
-    totalAmount: 85.0,
-    involvedUsers: [{ userId: '1', amount: 42.5 }, { userId: '2', amount: 42.5 }],
-    notes: 'Birthday dinner',
-  },
-  {
-    id: 't2',
-    type: 'game',
-    title: 'Poker Night',
-    gameType: 'poker',
-    date: '2025-11-26',
-    totalAmount: 0,
-    involvedUsers: [{ userId: '1', amount: 50 }, { userId: '2', amount: -30 }, { userId: '3', amount: -20 }],
-  },
-  {
-    id: 't3',
-    type: 'expense',
-    title: 'Grocery Shopping',
-    category: 'shopping',
-    date: '2025-11-25',
-    totalAmount: 120.5,
-    involvedUsers: [{ userId: '4', amount: 40.2 }, { userId: '5', amount: 40.2 }, { userId: '2', amount: 40.1 }],
-  },
-  {
-    id: 't4',
-    type: 'payment',
-    title: 'Settled up with Alex',
-    date: '2025-11-24',
-    totalAmount: 20.0,
-    involvedUsers: [{ userId: '1', amount: -20 }],
-  },
-  {
-    id: 't5',
-    type: 'game',
-    title: 'Mahjong Session',
-    gameType: 'mahjong',
-    date: '2025-11-23',
-    totalAmount: 0,
-    involvedUsers: [{ userId: '3', amount: 80 }, { userId: '4', amount: -25 }, { userId: '1', amount: -55 }],
-  },
-];
+const initialTransactions: Transaction[] = [];
 
 export function DataProvider({ children }: { children: ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User>({
