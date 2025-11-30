@@ -22,6 +22,14 @@ export default function TransactionDetail({ transactionId, onBack }: Transaction
     );
   }
 
+  // Find related settlements (payment transactions involving participants of this loan)
+  const relatedSettlements = transaction.type === 'loan' 
+    ? transactions.filter(t => 
+        t.type === 'payment' && 
+        t.involvedUsers.some(u => transaction.involvedUsers.some(tu => tu.userId === u.userId))
+      )
+    : [];
+
   const getTransactionTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
       loan: 'Loan',
@@ -167,6 +175,38 @@ export default function TransactionDetail({ transactionId, onBack }: Transaction
             })}
           </div>
         </div>
+
+        {/* Settlements */}
+        {transaction.type === 'loan' && relatedSettlements.length > 0 && (
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Settlements</h3>
+            <div className="space-y-3">
+              {relatedSettlements.map((settlement) => (
+                <div key={settlement.id} className="p-4 rounded-2xl bg-background neu-raised">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold text-primary">{settlement.title}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {new Date(settlement.date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    {settlement.involvedUsers.map((involvement) => {
+                      const user = users.find(u => u.id === involvement.userId);
+                      return (
+                        <div key={involvement.userId} className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">{user?.name || 'Unknown'}</span>
+                          <span className={`font-semibold ${involvement.amount > 0 ? 'text-positive' : 'text-negative'}`}>
+                            {involvement.amount > 0 ? '+' : '-'}${Math.abs(involvement.amount).toFixed(1)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
