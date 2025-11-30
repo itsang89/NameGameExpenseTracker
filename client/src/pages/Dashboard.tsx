@@ -108,18 +108,29 @@ export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTrans
             </button>
           </div>
           <div className="space-y-3">
-            {recentTransactions.map((tx) => (
-              <TransactionItem
-                key={tx.id}
-                type={tx.type}
-                title={tx.title}
-                date={tx.date}
-                amount={tx.involvedUsers.reduce((sum, u) => sum + u.amount, 0)}
-                category={tx.category}
-                gameType={tx.gameType}
-                onClick={() => onTransactionClick(tx.id)}
-              />
-            ))}
+            {recentTransactions.map((tx) => {
+              // For games, show the largest win/loss; for others, show total
+              let displayAmount: number;
+              if (tx.type === 'game') {
+                const amounts = tx.involvedUsers.map(u => Math.abs(u.amount));
+                displayAmount = Math.max(...amounts);
+              } else {
+                displayAmount = tx.involvedUsers.reduce((sum, u) => sum + u.amount, 0);
+              }
+              
+              return (
+                <TransactionItem
+                  key={tx.id}
+                  type={tx.type}
+                  title={tx.title}
+                  date={tx.date}
+                  amount={displayAmount}
+                  category={tx.category}
+                  gameType={tx.gameType}
+                  onClick={() => onTransactionClick(tx.id)}
+                />
+              );
+            })}
           </div>
         </section>
       </main>

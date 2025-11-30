@@ -97,10 +97,33 @@ export default function TransactionDetail({ transactionId, onBack }: Transaction
             <span>{new Date(transaction.date).toLocaleDateString()}</span>
           </div>
 
-          {transaction.totalAmount > 0 && (
+          {transaction.type !== 'game' && transaction.totalAmount > 0 && (
             <div className="flex items-center gap-2 text-2xl font-bold text-positive">
               <DollarSign className="w-6 h-6" />
               {transaction.totalAmount.toFixed(1)}
+            </div>
+          )}
+
+          {transaction.type === 'game' && (
+            <div className="mt-4 p-3 rounded-lg bg-muted">
+              <p className="text-sm text-muted-foreground font-semibold mb-2">Game Summary</p>
+              <div className="space-y-2">
+                {transaction.involvedUsers
+                  .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount))
+                  .slice(0, 3)
+                  .map((involvement) => {
+                    const user = users.find(u => u.id === involvement.userId);
+                    const isWinner = involvement.amount > 0;
+                    return (
+                      <div key={involvement.userId} className="flex items-center justify-between text-sm">
+                        <span className="font-medium">{user?.name || 'Unknown'}</span>
+                        <span className={isWinner ? 'text-positive' : 'text-negative'}>
+                          {isWinner ? '+' : '-'}${Math.abs(involvement.amount).toFixed(1)}
+                        </span>
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
           )}
 
