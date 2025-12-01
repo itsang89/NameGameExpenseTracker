@@ -7,7 +7,7 @@ import AchievementCard from '@/components/AchievementCard';
 import { useData } from '@/contexts/DataContext';
 
 export default function Analytics() {
-  const { users, transactions } = useData();
+  const { currentUser, users, transactions } = useData();
   const [activeTab, setActiveTab] = useState('leaderboard');
   const [prevTab, setPrevTab] = useState('leaderboard');
   const [timeFilter, setTimeFilter] = useState('month');
@@ -19,31 +19,32 @@ export default function Analytics() {
   };
 
   const friends = users.filter(u => !u.isGroup);
-  const leaderboard = [...friends].sort((a, b) => b.balance - a.balance);
+  const allPlayers = [currentUser, ...friends];
+  const leaderboard = [...allPlayers].sort((a, b) => b.balance - a.balance);
 
   const gameTransactions = transactions.filter(t => t.type === 'game');
   
   const achievements = useMemo(() => {
-    const biggestWinner = [...friends].sort((a, b) => b.balance - a.balance)[0];
+    const biggestWinner = [...allPlayers].sort((a, b) => b.balance - a.balance)[0];
     
-    const playerGameCounts = friends.map(f => ({
-      ...f,
-      games: gameTransactions.filter(t => t.involvedUsers.some(u => u.userId === f.id)).length
+    const playerGameCounts = allPlayers.map(p => ({
+      ...p,
+      games: gameTransactions.filter(t => t.involvedUsers.some(u => u.userId === p.id)).length
     }));
     const mostPlayed = playerGameCounts.sort((a, b) => b.games - a.games)[0];
 
     return {
       biggestWinner: biggestWinner ? {
         value: `+$${biggestWinner.balance.toFixed(1)}`,
-        holder: biggestWinner.name
+        holder: biggestWinner.id === 'current' ? currentUser.name : biggestWinner.name
       } : { value: '$0', holder: 'No winner yet' },
-      winStreak: { value: '3 wins', holder: leaderboard[0]?.name || 'No streak' },
+      winStreak: { value: '3 wins', holder: leaderboard[0] ? (leaderboard[0].id === 'current' ? currentUser.name : leaderboard[0].name) : 'No streak' },
       mostPlayed: mostPlayed ? {
         value: `${mostPlayed.games} games`,
-        holder: mostPlayed.name
+        holder: mostPlayed.id === 'current' ? currentUser.name : mostPlayed.name
       } : { value: '0 games', holder: 'No games yet' }
     };
-  }, [friends, gameTransactions, leaderboard]);
+  }, [allPlayers, gameTransactions, leaderboard, currentUser]);
 
   // todo: remove mock functionality - generate chart data
   const chartData = useMemo(() => {
@@ -125,18 +126,21 @@ export default function Analytics() {
               <section>
                 <h3 className="text-lg font-semibold mb-3">Hall of Fame</h3>
                 <div className="rounded-2xl bg-background neu-raised divide-y divide-border/50">
-                  {leaderboard.map((user, index) => (
-                    <LeaderboardItem
-                      key={user.id}
-                      rank={index + 1}
-                      name={user.name}
-                      avatar={user.avatar}
-                      amount={user.balance}
-                      gamesPlayed={gameTransactions.filter(t => 
-                        t.involvedUsers.some(u => u.userId === user.id)
-                      ).length}
-                    />
-                  ))}
+                  {leaderboard.map((user, index) => {
+                    const displayName = user.id === 'current' ? currentUser.name : user.name;
+                    return (
+                      <LeaderboardItem
+                        key={user.id}
+                        rank={index + 1}
+                        name={displayName}
+                        avatar={user.avatar}
+                        amount={user.balance}
+                        gamesPlayed={gameTransactions.filter(t => 
+                          t.involvedUsers.some(u => u.userId === user.id)
+                        ).length}
+                      />
+                    );
+                  })}
                 </div>
               </section>
 
