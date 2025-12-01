@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertTransactionSchema } from "@shared/schema";
 import { z } from "zod";
+import { signUp, signIn, signOut, getCurrentUser } from "./supabase";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -180,12 +181,67 @@ export async function registerRoutes(
         title: isOwedToYou ? `${user.name} paid you` : `You paid ${user.name}`,
         date: new Date().toISOString().split('T')[0],
         totalAmount: Math.abs(amount),
-        involvedUsers: [{ userId, amount: isOwedToYou ? -amount : amount }],
+        involvedUsers: [
+          { userId: 'current', amount: isOwedToYou ? amount : -amount },
+          { userId, amount: isOwedToYou ? -amount : amount }
+        ],
       });
 
       res.status(201).json(transaction);
     } catch (error) {
       res.status(500).json({ error: "Failed to settle up" });
+    }
+  });
+
+  // ==================== AUTHENTICATION ====================
+
+  app.post("/api/auth/signup", async (req, res) => {
+    try {
+      const { email, password, fullName } = req.body;
+      
+      if (!email || !password || !fullName) {
+        res.status(400).json({ error: "email, password, and fullName required" });
+        return;
+      }
+
+      const data = await signUp(email, password, fullName);
+      res.status(201).json(data);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message || "Sign up failed" });
+    }
+  });
+
+  app.post("/api/auth/signin", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        res.status(400).json({ error: "email and password required" });
+        return;
+      }
+
+      const data = await signIn(email, password);
+      res.status(200).json(data);
+    } catch (error: any) {
+      res.status(401).json({ error: error.message || "Sign in failed" });
+    }
+  });
+
+  app.post("/api/auth/signout", async (req, res) => {
+    try {
+      await signOut();
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message || "Sign out failed" });
+    }
+  });
+
+  app.get("/api/auth/me", async (req, res) => {
+    try {
+      const user = await getCurrentUser();
+      res.json(user);
+    } catch (error: any) {
+      res.status(401).json({ error: "Not authenticated" });
     }
   });
 
