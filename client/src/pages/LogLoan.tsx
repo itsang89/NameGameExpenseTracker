@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, Calendar, FileText, Receipt, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,6 +39,10 @@ export default function LogLoan({ onBack }: LogLoanProps) {
 
   const friends = users.filter(u => !u.isGroup);
   const groups = users.filter(u => u.isGroup);
+
+  useEffect(() => {
+    setShowParticipantModal(true);
+  }, []);
 
   const toggleUser = (id: string, user: User) => {
     if (user.isGroup && user.members) {
