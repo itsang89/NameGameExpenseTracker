@@ -129,11 +129,11 @@ export default function LogLoan({ onBack }: LogLoanProps) {
 
         <section>
           <h3 className="text-sm font-semibold text-muted-foreground mb-3">Category</h3>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2">
             {categories.map((cat) => (
               <div
                 key={cat.id}
-                className={`p-4 rounded-2xl bg-background cursor-pointer text-center transition-all duration-200 ${
+                className={`p-2 rounded-xl bg-background cursor-pointer text-center transition-all duration-200 ${
                   selectedCategory === cat.id 
                     ? 'neu-pressed ring-2 ring-primary' 
                     : 'neu-interactive'
@@ -141,8 +141,8 @@ export default function LogLoan({ onBack }: LogLoanProps) {
                 onClick={() => setSelectedCategory(cat.id)}
                 data-testid={`category-${cat.id}`}
               >
-                <span className="text-2xl">{cat.icon}</span>
-                <p className="text-sm mt-1 font-medium">{cat.label}</p>
+                <span className="text-lg">{cat.icon}</span>
+                <p className="text-xs mt-0.5 font-medium">{cat.label}</p>
               </div>
             ))}
           </div>
