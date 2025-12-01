@@ -289,55 +289,61 @@ export default function LogLoan({ onBack }: LogLoanProps) {
       </main>
 
       <Dialog open={showParticipantModal} onOpenChange={setShowParticipantModal}>
-        <DialogContent className="max-h-[80vh] overflow-y-auto rounded-3xl neu-raised border-none">
-          <DialogHeader>
-            <DialogTitle>Who is involved?</DialogTitle>
-            <DialogDescription>Select friends or groups to split this expense with</DialogDescription>
-          </DialogHeader>
-          <Tabs defaultValue="friends">
-            <TabsList className="w-full bg-background neu-raised rounded-xl p-1">
-              <TabsTrigger value="friends" className="flex-1 rounded-lg data-[state=active]:neu-pressed">Friends</TabsTrigger>
-              <TabsTrigger value="groups" className="flex-1 rounded-lg data-[state=active]:neu-pressed">Groups</TabsTrigger>
-            </TabsList>
-            <TabsContent value="friends" className="space-y-2 mt-4">
-              {friends.map((friend) => (
-                <label key={friend.id} className="flex items-center gap-3 p-3 rounded-xl neu-interactive-sm cursor-pointer">
-                  <Checkbox
-                    checked={selectedUsers.includes(friend.id)}
-                    onCheckedChange={() => toggleUser(friend.id, friend)}
-                  />
-                  <Avatar className="w-10 h-10">
-                    <AvatarImage src={`https://api.dicebear.com/7.x/${friend.avatar}/svg?seed=${friend.name}`} />
-                    <AvatarFallback>{friend.name[0]}</AvatarFallback>
-                  </Avatar>
-                  <span className="font-medium">{friend.name}</span>
-                </label>
-              ))}
-            </TabsContent>
-            <TabsContent value="groups" className="space-y-2 mt-4">
-              {groups.map((group) => (
-                <label key={group.id} className="flex items-center gap-3 p-3 rounded-xl neu-interactive-sm cursor-pointer">
-                  <Checkbox
-                    checked={selectedUsers.includes(group.id)}
-                    onCheckedChange={() => toggleUser(group.id, group)}
-                  />
-                  <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-lg neu-raised-sm">
-                    🎲
-                  </div>
-                  <div>
-                    <span className="font-medium">{group.name}</span>
-                    <p className="text-sm text-muted-foreground">{group.members?.length} members</p>
-                  </div>
-                </label>
-              ))}
-            </TabsContent>
-          </Tabs>
-          <button 
-            onClick={() => setShowParticipantModal(false)} 
-            className="w-full mt-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold neu-btn"
-          >
-            Done
-          </button>
+        <DialogContent className="flex flex-col max-h-[80vh] rounded-3xl neu-raised border-none p-0">
+          <div className="flex-0 px-6 pt-6">
+            <DialogHeader>
+              <DialogTitle>Who is involved?</DialogTitle>
+              <DialogDescription>Select friends or groups to split this expense with</DialogDescription>
+            </DialogHeader>
+          </div>
+          <div className="flex-1 overflow-y-auto px-6 pb-4">
+            <Tabs defaultValue="friends">
+              <TabsList className="w-full bg-background neu-raised rounded-xl p-1">
+                <TabsTrigger value="friends" className="flex-1 rounded-lg data-[state=active]:neu-pressed">Friends</TabsTrigger>
+                <TabsTrigger value="groups" className="flex-1 rounded-lg data-[state=active]:neu-pressed">Groups</TabsTrigger>
+              </TabsList>
+              <TabsContent value="friends" className="space-y-2 mt-4">
+                {friends.map((friend) => (
+                  <label key={friend.id} className="flex items-center gap-3 p-3 rounded-xl neu-interactive-sm cursor-pointer">
+                    <Checkbox
+                      checked={selectedUsers.includes(friend.id)}
+                      onCheckedChange={() => toggleUser(friend.id, friend)}
+                    />
+                    <Avatar className="w-10 h-10">
+                      <AvatarImage src={`https://api.dicebear.com/7.x/${friend.avatar}/svg?seed=${friend.name}`} />
+                      <AvatarFallback>{friend.name[0]}</AvatarFallback>
+                    </Avatar>
+                    <span className="font-medium">{friend.name}</span>
+                  </label>
+                ))}
+              </TabsContent>
+              <TabsContent value="groups" className="space-y-2 mt-4">
+                {groups.map((group) => (
+                  <label key={group.id} className="flex items-center gap-3 p-3 rounded-xl neu-interactive-sm cursor-pointer">
+                    <Checkbox
+                      checked={selectedUsers.includes(group.id)}
+                      onCheckedChange={() => toggleUser(group.id, group)}
+                    />
+                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-lg neu-raised-sm">
+                      🎲
+                    </div>
+                    <div>
+                      <span className="font-medium">{group.name}</span>
+                      <p className="text-sm text-muted-foreground">{group.members?.length} members</p>
+                    </div>
+                  </label>
+                ))}
+              </TabsContent>
+            </Tabs>
+          </div>
+          <div className="flex-0 px-6 pb-6 border-t border-border">
+            <button 
+              onClick={() => setShowParticipantModal(false)} 
+              className="w-full mt-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold neu-btn"
+            >
+              Done
+            </button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
