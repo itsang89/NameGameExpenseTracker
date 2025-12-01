@@ -140,7 +140,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
       title: isOwedToYou ? `${user.name} paid you` : `You paid ${user.name}`,
       date: new Date().toISOString().split('T')[0],
       totalAmount: roundedAmount,
-      involvedUsers: [{ userId, amount: isOwedToYou ? -roundedAmount : roundedAmount }],
+      involvedUsers: [
+        { userId: 'current', amount: isOwedToYou ? roundedAmount : -roundedAmount },
+        { userId, amount: isOwedToYou ? -roundedAmount : roundedAmount }
+      ],
     });
   }, [users, addTransaction]);
 
