@@ -114,6 +114,10 @@ export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTrans
               if (tx.type === 'game') {
                 const amounts = tx.involvedUsers.map(u => Math.abs(u.amount));
                 displayAmount = Math.max(...amounts);
+              } else if (tx.type === 'payment') {
+                // For payments, show the amount from the payer's perspective (negative if they paid)
+                const friendInvolvement = tx.involvedUsers.find(u => u.userId !== 'current');
+                displayAmount = friendInvolvement?.amount ?? 0;
               } else {
                 displayAmount = tx.totalAmount;
               }

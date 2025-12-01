@@ -44,22 +44,36 @@ export default function TransactionHistory({ onBack, onTransactionClick, filterT
             <p className="text-muted-foreground">No transactions found</p>
           </div>
         ) : (
-          filtered.map((tx) => (
-            <div 
-              key={tx.id}
-              onClick={() => onTransactionClick(tx.id)}
-              className="cursor-pointer"
-            >
-              <TransactionItem
-                type={tx.type}
-                title={tx.title}
-                date={tx.date}
-                amount={tx.involvedUsers.reduce((sum, u) => sum + u.amount, 0)}
-                category={tx.category}
-                gameType={tx.gameType}
-              />
-            </div>
-          ))
+          filtered.map((tx) => {
+            let displayAmount: number;
+            if (tx.type === 'game') {
+              const amounts = tx.involvedUsers.map(u => Math.abs(u.amount));
+              displayAmount = Math.max(...amounts);
+            } else if (tx.type === 'payment') {
+              // For payments, show the amount from the payer's perspective (negative if they paid)
+              const friendInvolvement = tx.involvedUsers.find(u => u.userId !== 'current');
+              displayAmount = friendInvolvement?.amount ?? 0;
+            } else {
+              displayAmount = tx.totalAmount;
+            }
+            
+            return (
+              <div 
+                key={tx.id}
+                onClick={() => onTransactionClick(tx.id)}
+                className="cursor-pointer"
+              >
+                <TransactionItem
+                  type={tx.type}
+                  title={tx.title}
+                  date={tx.date}
+                  amount={displayAmount}
+                  category={tx.category}
+                  gameType={tx.gameType}
+                />
+              </div>
+            );
+          })
         )}
       </main>
     </div>
