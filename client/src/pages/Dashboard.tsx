@@ -109,13 +109,13 @@ export default function Dashboard({ onLogLoan, onLogGame, onFriendClick, onTrans
           </div>
           <div className="space-y-3">
             {recentTransactions.map((tx) => {
-              // For games, show the largest win/loss; for others, show total
+              // For games, show the largest win/loss; for loans, show total amount
               let displayAmount: number;
               if (tx.type === 'game') {
                 const amounts = tx.involvedUsers.map(u => Math.abs(u.amount));
                 displayAmount = Math.max(...amounts);
               } else {
-                displayAmount = tx.involvedUsers.reduce((sum, u) => sum + u.amount, 0);
+                displayAmount = tx.totalAmount;
               }
               
               return (
